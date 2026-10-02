@@ -1,27 +1,9 @@
 <!doctype html>
-<html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Ecotoon은 현재 개발중입니다." />
-    <title>Ecotoon | 개발중</title>
-    <style>
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        min-height: 100vh;
-        min-height: 100svh;
-        display: grid;
-        place-items: center;
-        background: #f7faf7;
-        color: #244b37;
-        font-family: system-ui, -apple-system, "Malgun Gothic", sans-serif;
-      }
-      main { padding: 24px; text-align: center; }
-      h1 { margin: 0; font-size: clamp(32px, 8vw, 56px); font-weight: 700; }
-    </style>
-  </head>
-  <body>
-    <main><h1>개발중</h1></main>
-  </body>
-</html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="1학년부터 6학년까지, 이야기로 배우고 생활에서 실천하는 충주용산초경제툰"><title>충주용산초경제툰 · 생각이 자라는 경제 이야기</title><link rel="stylesheet" href="style.css"></head><body>
+<header><a class="brand" href="./"><span class="brand-icon">툰</span>충주용산초<span>경제툰</span></a><nav aria-label="주 메뉴"><a class="active" href="#library">웹툰 보러가기</a><button id="activityNav">나의 활동 <span class="tiny-dot"></span></button><button id="guideNav">선생님 안내 <span class="arrow">↗</span></button></nav></header>
+<main><section class="hero"><div class="hero-copy"><div class="eyebrow"><span></span> 우리 학교에서 시작하는 경제 공부</div><h1>작은 호기심이,<br>똑똑한 <em>경제 습관</em>으로.</h1><p>돈이 궁금한 1학년부터 세상을 바꾸는 6학년까지.<br>친구들과 함께 읽고, 생각하고, 직접 해 봐요!</p><a class="primary" href="#library">내 학년 웹툰 만나기 <span>↗</span></a><div class="hero-note"><span class="faces">☺ ☺ ☺</span> 우리에게 꼭 필요한 경제 · 노동 · 금융 이야기</div></div><div class="hero-art"><div class="art-window scene s0" role="img" aria-label="동전과 저금통을 살펴보는 어린이 친구들"></div><span class="sticker sticker-top">오늘부터 우리도<br><strong>경제 탐험가!</strong> ✦</span><span class="sticker sticker-bottom">작은 선택, 커다란 배움 🌱</span><span class="spark">✳</span></div></section>
+<div class="intro-strip"><span><b>6</b>개 학년</span><i></i><span><b>36</b>개의 경제 이야기</span><i></i><span>📖 웹툰으로 이해하고</span><span>💡 퀴즈로 생각하고</span><span>🌱 생활 속에서 실천해요</span></div>
+<section id="library" class="library"><div class="section-heading"><div><div class="eyebrow">우리들의 경제 도서관</div><h2>어떤 이야기를 만나 볼까요?</h2></div><span class="section-hint">내 학년을 골라 탐험을 시작해요 <span>↙</span></span></div><div id="grades" class="grades" role="group" aria-label="학년 선택"></div><div class="toolbar"><div class="categories" role="group" aria-label="영역 선택"><button class="selected" data-category="전체">전체 이야기</button><button data-category="경제">🟢 경제</button><button data-category="노동">🟠 노동</button><button data-category="금융">🔵 금융</button></div><span id="count"></span></div><div id="cards" class="cards"></div></section>
+<section class="bottom-banner"><span class="banner-icon">✎</span><div><h3>웹툰 속 배움을, 우리 생활 속으로!</h3><p>이야기를 읽고 나만의 생각을 남겨 보세요. 작은 실천이 멋진 습관이 돼요.</p></div><button id="activityButton">나의 활동 살펴보기 <span>→</span></button></section>
+</main><footer><a class="brand" href="./"><span class="brand-icon">툰</span>충주용산초경제툰</a><p>함께 배우고, 함께 자라는 우리들의 경제 이야기</p><span>충주용산초등학교 · 경제 교육</span></footer>
+<dialog id="reader"><div class="dialog-top"><span id="readerLabel"></span><button class="close" aria-label="닫기">×</button></div><div id="readerBody"></div></dialog><dialog id="info"><div class="dialog-top"><strong id="infoTitle"></strong><button class="close" aria-label="닫기">×</button></div><div id="infoBody"></div></dialog><script src="curriculum.js"></script><script src="stories.js"></script><script src="app.js"></script></body></html>
