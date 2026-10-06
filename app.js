@@ -32,7 +32,12 @@ else {
 function record(id){
  const p=progress[id];return p&&typeof p==='object'?p:{};
 }
-function artClass(story,art){return 'growth-art age-'+story.grade+' art-'+art;}
+function episodeArt(story,index,description){
+ const sheet=story.illustration;
+ const col=index%sheet.columns,row=Math.floor(index/sheet.columns);
+ return '<div class="episode-art"><div class="episode-tile"><img src="'+escapeHTML(sheet.src)+'" width="'+sheet.width+'" height="'+sheet.height+'" loading="lazy" decoding="async" alt="'+escapeHTML(description)+'" style="width:'+sheet.columns*100+'%;height:'+sheet.rows*100+'%;left:'+(-col*100)+'%;top:'+(-row*100)+'%"></div></div>';
+}
+function episodeRatio(story){const s=story.illustration;return s.width*s.rows/(s.height*s.columns);}
 $('#grades').innerHTML='<button data-grade="0" class="selected" aria-pressed="true">전체 학년<small>모든 이야기</small></button>'+profiles.map((p,i)=>'<button data-grade="'+(i+1)+'" aria-pressed="false">'+(i+1)+'학년<small>'+p.name+'</small></button>').join('');
 const growth=document.createElement('section');growth.className='growth-gallery';growth.id='growth';
 growth.innerHTML='<div class="section-heading"><div><div class="eyebrow">한 해 한 해, 함께 자라는 친구들</div><h2>지우와 하린의 여섯 번의 성장</h2></div><p>같은 친구, 조금씩 깊어지는 이야기</p></div><div class="growth-steps">'+profiles.map((p,i)=>'<button data-growth="'+(i+1)+'"><div class="art-crop"><div class="growth-art age-'+(i+1)+' art-0" role="img" aria-label="'+(i+1)+'학년 지우와 하린"></div></div><b>'+(i+1)+'학년</b><span>'+p.name+'</span></button>').join('')+'</div><p class="growth-note">노랑 옷의 지우와 초록 옷의 하린. 외형과 말투가 학년과 함께 자라요.</p>';
@@ -53,7 +58,7 @@ function render(){
  $('#count').textContent='총 '+shown.length+'편 · 모두 8장면';
  $('#cards').innerHTML=shown.map(s=>{
   const p=record(s.id);
-  return '<button class="card" data-story="'+s.id+'" aria-label="'+s.grade+'학년 '+escapeHTML(s.title)+' 읽기"><div class="cover art-crop"><div class="'+artClass(s,s.cover)+'" role="img" aria-label="'+s.grade+'학년 성장형 캐릭터의 '+escapeHTML(s.title)+' 대표 삽화"></div><span class="grade-label">'+s.grade+'학년</span>'+(p.read?'<span class="read-label">'+(p.gameDone?'게임 완료 ★':'게임 열림 ✓')+'</span>':'')+'</div><div class="card-body"><div class="tags"><span class="tag '+s.area+'">'+s.area+'</span><span>EP. '+String(s.number).padStart(2,'0')+'</span></div><h3>'+escapeHTML(s.title)+'</h3><span class="story-subtitle">'+escapeHTML(s.subtitle)+'</span><p>'+escapeHTML(s.hook)+'</p><div class="card-bottom"><span>▤ 8장면 · 완료 후 미니게임</span><b>읽어 보기 ↗</b></div></div></button>';
+  return '<button class="card" data-story="'+s.id+'" aria-label="'+s.grade+'학년 '+escapeHTML(s.title)+' 읽기"><div class="cover episode-cover" style="--episode-ratio:'+episodeRatio(s)+'">'+episodeArt(s,0,s.subtitle+' · '+s.panels[0].caption)+'<span class="grade-label">'+s.grade+'학년</span>'+(p.read?'<span class="read-label">'+(p.gameDone?'게임 완료 ★':'게임 열림 ✓')+'</span>':'')+'</div><div class="card-body"><div class="tags"><span class="tag '+s.area+'">'+s.area+'</span><span>EP. '+String(s.number).padStart(2,'0')+'</span></div><h3>'+escapeHTML(s.title)+'</h3><span class="story-subtitle">'+escapeHTML(s.subtitle)+'</span><p>'+escapeHTML(s.hook)+'</p><div class="card-bottom"><span>▤ 8장면 · 완료 후 미니게임</span><b>읽어 보기 ↗</b></div></div></button>';
  }).join('');
 }
 function open(dialog){dialog.showModal();document.body.classList.add('modal-open');}
@@ -63,13 +68,14 @@ document.querySelectorAll('dialog').forEach(dialog=>{
  dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();});
 });
 $('#cards').onclick=event=>{const button=event.target.closest('[data-story]');if(button)readStory(button.dataset.story);};
-function speech(line){
+function speech(line,reversed){
  const colon=line.indexOf(':');const person=colon>=0?line.slice(0,colon):'이야기',text=colon>=0?line.slice(colon+1).trim():line;
  const kind=person==='지우'?'jiwoo':person==='하린'?'harin':'guest';
- return '<div class="integrated-speech '+kind+'"><b>'+escapeHTML(person)+'</b><p>'+escapeHTML(text)+'</p></div>';
+ let side=person==='하린'?'right':'left';if(reversed)side=side==='left'?'right':'left';
+ return '<div class="integrated-speech '+kind+' speaker-'+side+'"><b>'+escapeHTML(person)+'</b><p>'+escapeHTML(text)+'</p></div>';
 }
 function storyScene(story,p,index){
- return '<section class="integrated-panel" id="panel-'+index+'" aria-labelledby="panel-title-'+index+'"><div class="comic-stage"><div class="scene-picture"><div class="comic-art '+artClass(story,p.art)+'" role="img" aria-label="'+escapeHTML(story.title)+' 이야기의 대표 삽화"></div><div class="stage-heading"><span>'+String(index+1).padStart(2,'0')+' / 08</span><h3 id="panel-title-'+index+'">'+escapeHTML(p.caption)+'</h3></div></div><div class="dialogue-flow">'+p.lines.map(speech).join('')+'</div></div></section>';
+ return '<section class="integrated-panel" id="panel-'+index+'" aria-labelledby="panel-title-'+index+'"><div class="comic-stage"><div class="stage-heading"><span>'+String(index+1).padStart(2,'0')+' / 08</span><h3 id="panel-title-'+index+'">'+escapeHTML(p.caption)+'</h3></div><div class="scene-picture" style="aspect-ratio:'+episodeRatio(story)+'">'+episodeArt(story,index,p.caption)+'</div><div class="dialogue-flow">'+p.lines.map(line=>speech(line,p.reverseSpeakers)).join('')+'</div></div></section>';
 }
 function readerGame(story){
  const zone=$('#miniGameZone'),p=record(story.id);
@@ -124,7 +130,7 @@ function activities(){
 $('#activityNav').onclick=activities;$('#activityButton').onclick=activities;
 $('#guideNav').onclick=()=>{
  $('#infoTitle').textContent='선생님 안내';
- $('#infoBody').innerHTML='<h2>함께 자라는 경제 이야기</h2><p>1~6학년 각 15편, 경제·노동·금융 각 5편으로 총 90편입니다. 학년별 성장형 지우·하린과 만화 안의 말풍선으로 8장면을 읽습니다. 장면마다 상황 묘사와 두 친구의 대화를 읽으며 사건·선택·결과를 따라갑니다. 학년별 대표 삽화를 여러 장면에서 함께 사용합니다.</p><ol><li>경험을 나누고 학년별 이야기를 고릅니다.</li><li>만화의 8장면을 읽고 누가 무엇을 원했는지, 무엇을 골랐고 어떤 결과가 생겼는지 이야기합니다.</li><li>퀴즈와 생활 활동을 합니다. 저학년은 그림이나 구술도 가능합니다.</li><li>활동 저장하고 읽기 완료를 누르면 주제별 미니게임이 열립니다.</li><li>게임 결과와 생활 활동을 연결해 다시 생각합니다.</li></ol><p>노래 활동은 새로 만든 리듬을 사용합니다. 금융·무역·창업 게임은 놀이 돈과 가상 상황으로만 진행하며 실제 거래나 투자 추천이 아닙니다. 직업·계약 체험은 안전한 모의 활동이며 실제 취업이 아닙니다.</p><p>기록은 기기 내 브라우저에만 저장됩니다. 계정·교사용 수집·다른 기기 동기화는 제공하지 않습니다. 이름과 연락처, 실제 계좌·신용 정보를 입력하지 않도록 안내해 주세요.</p>';
+ $('#infoBody').innerHTML='<h2>함께 자라는 경제 이야기</h2><p>1~6학년 각 15편, 경제·노동·금융 각 5편으로 총 90편입니다. 학년별 성장형 지우·하린과 만화 안의 말풍선으로 8장면을 읽습니다. 장면마다 상황 묘사와 두 친구의 대화를 읽으며 사건·선택·결과를 따라갑니다. 각 이야기의 8장면은 상황·행동·표정에 맞춰 새로 제작한 전용 삽화로 이어집니다.</p><ol><li>경험을 나누고 학년별 이야기를 고릅니다.</li><li>만화의 8장면을 읽고 누가 무엇을 원했는지, 무엇을 골랐고 어떤 결과가 생겼는지 이야기합니다.</li><li>퀴즈와 생활 활동을 합니다. 저학년은 그림이나 구술도 가능합니다.</li><li>활동 저장하고 읽기 완료를 누르면 주제별 미니게임이 열립니다.</li><li>게임 결과와 생활 활동을 연결해 다시 생각합니다.</li></ol><p>노래 활동은 새로 만든 리듬을 사용합니다. 금융·무역·창업 게임은 놀이 돈과 가상 상황으로만 진행하며 실제 거래나 투자 추천이 아닙니다. 직업·계약 체험은 안전한 모의 활동이며 실제 취업이 아닙니다.</p><p>기록은 기기 내 브라우저에만 저장됩니다. 계정·교사용 수집·다른 기기 동기화는 제공하지 않습니다. 이름과 연락처, 실제 계좌·신용 정보를 입력하지 않도록 안내해 주세요.</p>';
  open($('#info'));
 };
 const total=document.querySelector('.intro-strip span:nth-of-type(2) b');if(total)total.textContent=STORIES.length;

@@ -1,0 +1,219 @@
+{
+  "reviewed": [
+    "g1-01",
+    "g1-02",
+    "g1-03",
+    "g1-04",
+    "g1-05",
+    "g1-06",
+    "g1-07",
+    "g1-08",
+    "g1-09",
+    "g1-10",
+    "g1-11",
+    "g1-12",
+    "g1-13",
+    "g1-14",
+    "g1-15",
+    "g2-01",
+    "g2-02",
+    "g2-03",
+    "g2-04",
+    "g2-05",
+    "g2-06",
+    "g2-07",
+    "g2-08",
+    "g2-09",
+    "g2-10",
+    "g2-11",
+    "g2-12",
+    "g2-13",
+    "g2-14",
+    "g2-15",
+    "g3-01",
+    "g3-02",
+    "g3-03",
+    "g3-04",
+    "g3-05",
+    "g3-06",
+    "g3-07",
+    "g3-08",
+    "g3-09",
+    "g3-10",
+    "g3-11",
+    "g3-12",
+    "g3-13",
+    "g3-14",
+    "g3-15",
+    "g4-01",
+    "g4-02",
+    "g4-03",
+    "g4-04",
+    "g4-05",
+    "g4-06",
+    "g4-07",
+    "g4-08",
+    "g4-09",
+    "g4-10",
+    "g4-11",
+    "g4-12",
+    "g4-13",
+    "g4-14",
+    "g4-15",
+    "g5-01",
+    "g5-02",
+    "g5-03",
+    "g5-04",
+    "g5-05",
+    "g5-06",
+    "g5-07",
+    "g5-08",
+    "g5-09",
+    "g5-10",
+    "g5-11",
+    "g5-12",
+    "g5-13",
+    "g5-14",
+    "g5-15",
+    "g6-01",
+    "g6-02",
+    "g6-03",
+    "g6-04",
+    "g6-05",
+    "g6-06",
+    "g6-07",
+    "g6-08",
+    "g6-09",
+    "g6-10",
+    "g6-11",
+    "g6-12",
+    "g6-13",
+    "g6-14",
+    "g6-15"
+  ],
+  "speakerFlips": {
+    "g1-01": [
+      2
+    ],
+    "g1-03": [
+      4
+    ],
+    "g1-06": [
+      3
+    ],
+    "g1-07": [
+      3
+    ],
+    "g2-02": [
+      6
+    ],
+    "g2-09": [
+      4
+    ],
+    "g1-15": [
+      6
+    ],
+    "g1-09": [
+      5
+    ],
+    "g2-07": [
+      3
+    ],
+    "g3-04": [
+      2
+    ],
+    "g3-03": [
+      1
+    ],
+    "g4-01": [
+      5
+    ],
+    "g3-08": [
+      6
+    ],
+    "g1-10": [
+      2,
+      5
+    ],
+    "g3-10": [
+      2
+    ],
+    "g4-09": [
+      3
+    ]
+  },
+  "corrections": [
+    {
+      "id": "g1-03",
+      "source": "/workspace/generated_images/exec-fc8517fc-86f9-40d6-aa9f-f8299cfa1b15.png",
+      "issue": "Cell 6 must show exactly 3 coins total, with 2 inside the wallet and 1 being inserted; currently extra coins contradict the counting dialogue.",
+      "status": "applied"
+    },
+    {
+      "id": "g1-06",
+      "source": "/workspace/generated_images/exec-ad2666b8-4242-46b6-85f6-3065aff047be.png",
+      "issue": "Cell 6 boy asking about cooking must not already touch hot pot; depict stopping short while Harin signals stop.",
+      "status": "applied"
+    },
+    {
+      "id": "g5-09",
+      "source": "/workspace/generated_images/exec-141fb6c5-69a3-4276-bd9f-a89b5416e28d.png",
+      "issue": "Cell 7 checking updated role cards must stay classroom simulation, not actual factory inspection.",
+      "status": "applied"
+    },
+    {
+      "id": "g2-12",
+      "source": "/workspace/generated_images/exec-3632d961-c1ab-45c2-a27d-dbbf11aa6390.png",
+      "issue": "Cell 5 must show exactly FOUR weekly saving-step boxes; it currently draws five. Preserve 3 goal boxes in cells 2/3/4 and the 4 weekly boxes in cells 6/7/8.",
+      "status": "applied"
+    },
+    {
+      "id": "g3-14",
+      "source": "/workspace/generated_images/exec-a9a4b75c-a869-4adc-88b1-51f1a66e308e.png",
+      "issue": "Use the same principal-card stack plus ONE separate interest card in cells 2, 4 and 5, instead of incorrect literal candy arrays. Dialogue states the stack's principal is ten cards; one added card makes eleven. Cell 6 must show ONE interest card received by depositor (arrow toward avatar) and ONE paid by borrower (arrow away), with principal separate.",
+      "status": "applied"
+    },
+    {
+      "id": "g4-09",
+      "source": "/workspace/generated_images/exec-54e11546-07be-42c1-93c5-b5cf87717b36.png",
+      "issue": "Cell 6 must show the teacher lifting the heavy box ALONE while children step clear and indicate the safe path. Currently Jiwoo co-carries the heavy box, undermining the request-for-adult-help and safe-passage story. Keep seven other scenes unchanged.",
+      "status": "applied"
+    },
+    {
+      "id": "g2-14",
+      "source": "/workspace/generated_images/exec-10cb19ac-c8c8-4005-96f7-c60efc267d5b.png",
+      "issue": "Cell 8 both final checklists incorrectly show the optional 200-won snack as purchased, although cell 7 cancels it and prioritises notebook + hat leaving only 100 won. Replace ONLY the bottom snack pictogram on EACH final checklist with a pink piggy-bank savings pictogram. Preserve top notebook and middle hat and all checks. Final scene then matches 'preparation and saving records', not an unaffordable snack purchase.",
+      "status": "applied"
+    },
+    {
+      "id": "g1-13",
+      "source": "/workspace/generated_images/exec-e898c9b6-44a4-421f-917d-4cb72d065425.png",
+      "issue": "Cell 6 (third row RIGHT) explicitly says THREE coin drawings and 300 won but shows FOUR drawings (one on left plus three on right). Change only that notebook drawing to exactly ONE coin on left of dotted divider and TWO coins on right, THREE total, matching cells 7/8. Preserve all other seven scenes and the two real coins deposited today.",
+      "status": "applied"
+    },
+    {
+      "id": "g6-03",
+      "source": "/workspace/generated_images/exec-0f354a38-7518-4233-831f-7040f6061660.png",
+      "issue": "Cell 7 left comparison incorrectly converts a USD note into a green dollar-note stack. Replace ONLY the lower-left green dollar stack with a smaller blue Korean-won banknote stack marked with the WON symbol ₩, matching the blue won stack on the right (right stays larger). Both examples exchange dollars for won at different mock rates; leave arrows/USD source icons unchanged.",
+      "status": "applied"
+    },
+    {
+      "id": "g2-15",
+      "source": "/workspace/generated_images/exec-223d0be5-f572-4ace-9a74-6d2af05e55ce.png",
+      "issue": "The saving goal is a 3,000-won PHOTO ALBUM, but the charts incorrectly show a camera purchase. Replace every camera pictogram on the goal/record charts in cells 3/4/5/6/7/8 with the SAME pink photo-album pictogram with a small landscape photo on its cover. Keep the newly required blue school notebook in cell 2 and the photo envelope unchanged.",
+      "status": "applied"
+    },
+    {
+      "id": "g5-01",
+      "source": "/workspace/generated_images/exec-8bbf48b2-fe29-4b25-97e6-a2e60b51813a.png",
+      "issue": "CELL 6: Harin is obscured behind an extra boy. Show Jiwoo and Harin BOTH fully visible beside the neighboring blue boy and purple girl, comparing notebooks. Keep seven other scenes unchanged.",
+      "status": "applied"
+    },
+    {
+      "id": "g6-05",
+      "source": "/workspace/generated_images/exec-5b448c18-213d-406b-a490-409ca79cb511.png",
+      "issue": "CELL 5 must show classroom packaging/delivery ROLE CARDS behind the mock digital market screen, not children working in a real warehouse. Keep seven other cells unchanged.",
+      "status": "applied"
+    }
+  ]
+}
