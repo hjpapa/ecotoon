@@ -1,0 +1,16 @@
+# Static runtime only. Keep source artwork and authoring tools in Git.
+/*
+!/index.html
+!/style.css
+!/growth.css
+!/catalog.js
+!/games.js
+!/app.js
+!/vercel.json
+!/assets/
+/assets/*
+!/assets/economy-world.webp
+!/assets/growth-grade-*.webp
+!/assets/episodes/
+/assets/episodes/*
+!/assets/episodes/*.webp
