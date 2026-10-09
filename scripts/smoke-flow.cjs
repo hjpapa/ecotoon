@@ -68,6 +68,7 @@ async (page) => {
   await page.getByRole('button',{name:'④ 활동으로 이동 →',exact:true}).click();
   await assertStage('activity');
   await stage('comic').click();
+  await page.locator('#readingMode').click(); // Low grades open in paged mode.
   await page.getByRole('button',{name:'웹툰을 읽었어요 · 개념 정리로 →',exact:true}).click();
   check(await stage('comic').getAttribute('data-complete') === 'true', 'Reading session completion');
   await page.getByRole('button',{name:'개념을 살펴봤어요 · 퀴즈로 →',exact:true}).click();
