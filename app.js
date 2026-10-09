@@ -4,7 +4,7 @@ const escapeHTML = text => String(text).replace(/[&<>"']/g, c => ({'&':'&amp;','
 const areas = ['경제','노동','금융'];
 const Flow = window.LearningFlow;
 let activeStep = 'comic', sessionSteps = new Set(), suppressScrollTracking = false;
-let scrollFrame = 0;
+let scrollFrame = 0, comicReader = null;
 const profiles = [
   {name:'첫 경제 걸음',description:'짧은 말과 가까운 경험으로 배우는 지우와 하린'},
   {name:'생활 속 발견',description:'이유를 말하고 작은 계획을 세우는 두 친구'},
@@ -75,6 +75,7 @@ document.querySelectorAll('dialog').forEach(dialog=>{
    document.body.classList.toggle('modal-open',!!document.querySelector('dialog[open]'));
    if(dialog.id==='reader'){
      const closedId=readerId;readerId=null;sessionSteps.clear();
+     if(comicReader)comicReader.destroy();comicReader=null;
      if(Flow.parseRoute(location.hash,STORIES)){
        if(history.state&&history.state.ecotoonReader)history.back();
        else history.replaceState(null,'','#library');
@@ -123,20 +124,23 @@ function updateSteps(){
  });
 }
 function setActiveStep(step){
- activeStep=step;updateSteps();
+ activeStep=step;if(comicReader)comicReader.setStage(step);updateSteps();
+ $('#reader').style.setProperty('--reader-offset',($('.reader-toolbar').offsetHeight+18)+'px');
  const hash=Flow.storyHash(readerId,step);
  if(location.hash!==hash)history.replaceState({ecotoonReader:true},'',hash);
 }
 function scrollToStep(key){
  const step=Flow.steps.find(step=>step.key===key);if(!step||!readerId)return;
  suppressScrollTracking=true;setActiveStep(key);
- const target=document.getElementById(step.target);
- target.scrollIntoView({block:'start',behavior:'instant'});
+ const target=key==='comic'&&comicReader?comicReader.target():document.getElementById(step.target);
+ if($('#reader').dataset.readingMode!=='board')target.scrollIntoView({block:'start',behavior:'instant'});
  target.focus({preventScroll:true});
- requestAnimationFrame(()=>{suppressScrollTracking=false;});
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{suppressScrollTracking=false;}));
 }
 function trackReaderStep(){
  if(!readerId||!$('#reader').open||suppressScrollTracking)return;
+ if(comicReader)comicReader.trackScroll();
+ if($('#reader').dataset.readingMode==='board')return;
  const reader=$('#reader'),top=$('.reader-toolbar').getBoundingClientRect().bottom+24;
  let current='comic';
  Flow.steps.forEach(step=>{if(document.getElementById(step.target).getBoundingClientRect().top<=top)current=step.key;});
@@ -169,7 +173,7 @@ function speech(line,reversed){
  return '<div class="integrated-speech '+kind+' speaker-'+side+'"><b>'+escapeHTML(person)+'</b><p>'+escapeHTML(text)+'</p></div>';
 }
 function storyScene(story,p,index){
- return '<section class="integrated-panel" id="panel-'+index+'" aria-labelledby="panel-title-'+index+'"><div class="comic-stage"><div class="stage-heading"><span>'+String(index+1).padStart(2,'0')+' / 08</span><h3 id="panel-title-'+index+'">'+escapeHTML(p.caption)+'</h3></div><div class="scene-picture" style="aspect-ratio:'+episodeRatio(story)+'">'+episodeArt(story,index,p.caption)+'</div><div class="dialogue-flow">'+p.lines.map(line=>speech(line,p.reverseSpeakers)).join('')+'</div></div></section>';
+ return '<section class="integrated-panel" id="panel-'+index+'" tabindex="-1" aria-labelledby="panel-title-'+index+'"><div class="comic-stage"><div class="stage-heading"><span>'+String(index+1).padStart(2,'0')+' / 08</span><p id="panel-title-'+index+'">'+escapeHTML(p.caption)+'</p></div><div class="scene-picture" style="aspect-ratio:'+episodeRatio(story)+'">'+episodeArt(story,index,p.caption)+'</div><div class="dialogue-flow">'+p.lines.map(line=>speech(line,p.reverseSpeakers)).join('')+'</div></div></section>';
 }
 function readerGame(story){
  const zone=$('#miniGameZone');
@@ -199,6 +203,7 @@ function updateGameAvailability(story){
 }
 function mountReader(id){
  const story=STORIES.find(s=>s.id===id);if(!story)return;readerId=id;
+ if(comicReader)comicReader.destroy();comicReader=null;
  sessionSteps=new Set();activeStep='comic';
  const next=Flow.nextStory(STORIES,story,category);
  $('#readerLabel').textContent=story.grade+'학년 · '+story.area+' · 이야기 '+story.number+'/15';
@@ -208,9 +213,9 @@ function mountReader(id){
  $('#readerBody').innerHTML=`
   <section id="stage-comic" data-learning-stage="comic" tabindex="-1" aria-label="① 웹툰">
     <div class="reader-title"><span class="tag ${story.area}">${story.area} 이야기</span><h2>${escapeHTML(story.subtitle)}</h2><p class="reader-topic">학습 주제 · ${escapeHTML(story.title)}</p><p class="story-hook">${escapeHTML(story.hook)}</p><span class="reading-meta">① 웹툰 → ② 정리 → ③ 퀴즈 → ④ 활동 → ⑤ 게임</span></div>
-    <nav class="panel-navigation" aria-label="장면 이동"><span>장면 바로가기</span>${story.panels.map((p,i)=>'<button data-jump="'+i+'" aria-label="'+(i+1)+'장면으로 이동">'+(i+1)+'</button>').join('')}</nav>
     <div class="comic-panels grade-${story.grade}">${story.panels.map((p,i)=>storyScene(story,p,i)).join('')}</div>
-    <button class="action step-forward" data-continue="summary">웹툰을 읽었어요 · 개념 정리로 →</button>
+    <div id="sceneControls" class="scene-controls"></div>
+    <button id="scrollComicDone" class="action step-forward" data-continue="summary">웹툰을 읽었어요 · 개념 정리로 →</button>
   </section>
   <section id="stage-summary" class="learn-box" data-learning-stage="summary" tabindex="-1" aria-label="② 개념 정리">
     <h3 class="learning-heading">② 개념 정리 · 배움에 이름 붙이기</h3><strong>🌱 오늘의 경제 씨앗</strong><p>${escapeHTML(story.lesson)}</p>
@@ -232,7 +237,6 @@ function mountReader(id){
     <button class="back-to-library" id="backToLibrary">목록으로 돌아가기</button>
   </div><section id="gradeEnd" class="grade-completion" hidden tabindex="-1" aria-label="학년 학습 돌아보기"></section>`;
  $('#reflection').value=typeof record(id).note==='string'?record(id).note:'';
- document.querySelectorAll('[data-jump]').forEach(button=>button.onclick=()=>{const panel=$('#panel-'+button.dataset.jump);panel.scrollIntoView({behavior:'instant',block:'start'});const h=panel.querySelector('h3');h.setAttribute('tabindex','-1');h.focus({preventScroll:true});});
  document.querySelectorAll('[data-continue]').forEach(button=>button.onclick=()=>{
    if(button.dataset.continue==='summary')sessionSteps.add('comic');
    if(button.dataset.continue==='quiz')sessionSteps.add('summary');
@@ -255,6 +259,7 @@ function mountReader(id){
  else $('#finishGrade').onclick=()=>showGradeEnd(story);
  $('#backToLibrary').onclick=()=>$('#reader').close();
  readerGame(story);
+ comicReader=window.ComicReader.mount($('#reader'),story,{onComic:()=>scrollToStep('comic'),onSummary:()=>{sessionSteps.add('comic');scrollToStep('summary');}});
  if(!$('#reader').open)open($('#reader'));
  $('#reader').style.setProperty('--reader-offset',($('.reader-toolbar').offsetHeight+18)+'px');
  updateSteps();
