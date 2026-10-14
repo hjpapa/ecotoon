@@ -1,0 +1,68 @@
+/* Reader modes share one toolbar and preserve the learning/game DOM. */
+#reader{width:min(1040px,96vw);max-height:94dvh;--speech-size:16px;--caption-size:14px;overscroll-behavior:contain;overflow-anchor:none}
+#reader[data-grade="1"],#reader[data-grade="2"]{--speech-size:18px;--caption-size:15px}
+button{min-width:44px;min-height:44px}
+#reader button{min-width:44px;min-height:44px;font-size:12px}
+#reader .close{font-size:24px}
+#reader :is(small,.tag,.reader-topic,.reading-meta,.integrated-speech b,.stage-heading>span,.game-heading>span,.order-path span,.coin-tray span,.unlock-heading p,.game-controls button,.game-victory small,.portfolio-assets span,.portfolio-assets strong){font-size:12px}
+#reader .scene-tools{display:flex;gap:6px;padding:0 12px 6px}
+#readerModes button,.scene-controls button{border:1px solid #a5b99b;background:#fffdf8;border-radius:8px;padding:8px 12px;font-weight:700}
+#readerModes button[aria-pressed="true"],#readerModes button[aria-current]{background:#dceccb;border-color:#247653}
+#sceneProgress{display:block;width:100%;height:4px;border:0;accent-color:#247653;background:#e2e8da}
+#sceneProgress::-webkit-progress-bar{background:#e2e8da}
+#sceneProgress::-webkit-progress-value{background:#247653}
+.scene-list{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;padding:10px 12px}
+#reader .dialogue-flow{margin:18px 4% 4%;gap:18px}
+#reader .integrated-speech{max-width:94%;padding:12px 16px}
+#reader .integrated-speech p{font-size:var(--speech-size);line-height:1.75;overflow-wrap:anywhere}
+#reader .integrated-speech b{color:#324432}
+#reader .stage-heading{align-items:flex-start;padding:12px 16px;background:#fff3cd;gap:12px}
+#reader .stage-heading>span{flex-shrink:0;color:#4d5b46;line-height:1.8}
+#reader .stage-heading p{margin:0;font-size:var(--caption-size);line-height:1.8;text-align:left;word-break:keep-all;overflow-wrap:anywhere}
+#reader .comic-panels{touch-action:pan-y pinch-zoom}
+#reader .integrated-panel:focus{outline:none}
+.scene-controls{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:12px 0}
+#sceneStatus{font-size:12px;line-height:1.6;text-align:center}
+#reader #nextScene{background:#247653;color:white;border-color:#247653}
+#reader button:disabled{cursor:default;opacity:.5}
+#reader .portfolio-assets>div>div{flex-wrap:wrap}
+#reader .portfolio-assets button{width:44px;height:44px}
+#reader :is(.reader-topic,.reading-meta,.game-victory small,.activity small){color:#52614c}
+@media(max-width:1024px){
+ #reader{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:100dvh;margin:0;border-radius:0}
+}
+@media(max-width:520px){
+ #readerBody{padding:12px}
+ #reader .scene-tools{padding:0 8px 6px;gap:4px}
+ #readerModes button{padding:7px 9px}
+ .scene-list{grid-template-columns:repeat(4,1fr)}
+ #reader .integrated-speech{padding:10px 12px}
+ #reader .stage-heading{padding:10px;gap:8px}
+ .scene-controls{gap:5px}
+ .scene-controls button{padding:8px}
+}
+/* The board reserves separate image and dialogue columns; no art is obscured. */
+#reader[data-reading-mode="board"]{position:fixed;inset:0;margin:0;width:100vw;height:100dvh;max-width:none;max-height:100dvh;border-radius:0;overflow:hidden;display:flex;flex-direction:column}
+#reader[data-reading-mode="board"] .reader-toolbar{position:relative;flex:none}
+#reader[data-reading-mode="board"] #readerBody{flex:1;min-height:0;padding:12px;display:flex}
+#reader[data-reading-mode="board"] #readerBody>:not(#stage-comic),#reader[data-reading-mode="board"] .reader-title{display:none!important}
+#reader[data-reading-mode="board"] #stage-comic{width:100%;min-height:0;display:flex;flex-direction:column}
+#reader[data-reading-mode="board"] .comic-panels{flex:1;min-height:0;touch-action:auto}
+#reader[data-reading-mode="board"] .integrated-panel{height:100%;margin:0;box-shadow:none}
+#reader[data-reading-mode="board"] .comic-stage{height:100%;display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);grid-template-rows:auto minmax(0,1fr)}
+#reader[data-reading-mode="board"] .stage-heading{grid-column:1/-1}
+#reader[data-reading-mode="board"] .stage-heading p{font-size:calc(var(--caption-size)*1.5)}
+#reader[data-reading-mode="board"] .scene-picture{aspect-ratio:auto!important;height:100%;min-height:0;align-self:center}
+#reader[data-reading-mode="board"] .scene-picture>.episode-art{width:var(--board-art-width);height:var(--board-art-height);inset:50% auto auto 50%;transform:translate(-50%,-50%)}
+#reader[data-reading-mode="board"] .dialogue-flow{min-height:0;margin:0;padding:20px;overflow:auto;justify-content:safe center;gap:24px}
+#reader[data-reading-mode="board"] .integrated-speech{max-width:100%;flex-shrink:0}
+#reader[data-reading-mode="board"] .integrated-speech p{font-size:calc(var(--speech-size)*1.5)}
+#reader[data-reading-mode="board"] .integrated-speech b{font-size:18px}
+#reader[data-reading-mode="board"] .speech-pending{visibility:hidden}
+#reader[data-reading-mode="board"] .scene-controls{flex:none;padding-bottom:0}
+@media(max-width:700px){
+ #reader[data-reading-mode="board"] .comic-stage{grid-template-columns:1fr;grid-template-rows:auto minmax(80px,1fr) minmax(0,1fr)}
+ #reader[data-reading-mode="board"] .dialogue-flow{padding:12px;justify-content:flex-start;gap:16px}
+ #reader[data-reading-mode="board"] .scene-controls{display:grid;grid-template-columns:1fr 1fr}
+ #reader[data-reading-mode="board"] #sceneStatus{grid-column:1/-1;grid-row:1}
+}
