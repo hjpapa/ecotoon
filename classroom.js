@@ -46,7 +46,7 @@
   function confirm(kind){pending=kind;$('#deletePrompt').textContent=p.emoji+' '+p.name+(kind==='clear'?'의 모든 학습 기록을 지울까요?':' 프로필과 모든 학습 기록을 삭제할까요?');$('#deleteConfirm').hidden=false;$('#cancelDelete').focus();}
   $('#clearProfile').onclick=()=>confirm('clear');$('#deleteProfile').onclick=()=>confirm('remove');
   $('#cancelDelete').onclick=()=>{pending=null;$('#deleteConfirm').hidden=true;$('#clearProfile').focus();};
-  $('#confirmDelete').onclick=()=>{if(pending)run(()=>store[pending](),'지웠어요. 다른 프로필의 기록은 그대로예요.');};
+  $('#confirmDelete').onclick=()=>{if(pending)run(()=>{store[pending]();EcoLibrary.clear(p.id)},'지웠어요. 다른 프로필의 기록은 그대로예요.');};
  }
  $('#profileNav').onclick=()=>{render();dialog.showModal();document.body.classList.add('modal-open');};
  dialog.addEventListener('close',()=>{readSequence++;pending=null;importText=null;$('#profileNav').focus();});

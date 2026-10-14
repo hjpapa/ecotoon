@@ -203,3 +203,17 @@ WP8 로컬 실측(2026-10-14): 첫 화면 360/390px 1,269,293B, 768px 1,293,145B
 `node scripts/build-dialogue.cjs`는 보존한 원래 대사와 `production/pause-prompts.txt`로 재생성합니다. `production/dialogue-review.md`는 현재 대사의 교사 검수 대기표입니다. `production/storyboards.json`은 기존 삽화 생성 프롬프트로 보존합니다. `verify-episodes.cjs`는 그림 관련 장면 설명·순서·화자 좌우·원본 체크섬을 계속 확인하고, 바뀐 웹 대사는 `node scripts/verify-dialogue.cjs`로 검사합니다. 퀴즈 근거 표도 현재 대사에 맞춰 갱신했습니다.
 
 검증: `verify-dialogue`, `verify-episodes`, `verify-quizzes`, `verify-games`, `verify-deployment`; 브라우저 `scripts/smoke-learning.cjs`(네 폭의 예상·뜻풀이·초점·인쇄 및 1920px 조연/침묵 장면), `scripts/smoke-reader.cjs`(90편 × 네 폭과 전자칠판). 실제 교사의 난도·발문 검수는 별도로 남겨 두었습니다.
+
+## WP10 읽어 주기·스탬프와 이어 보기
+
+말풍선의 **▶ 읽기**는 기기에 설치된 한국어 음성이 있을 때 표시됩니다. `getVoices()`와 `voiceschanged`로 늦게 준비되는 음성도 감지합니다. 외부 요청을 늘리지 않도록 `localService === true`인 한국어 음성만 사용하며, 없거나 API를 지원하지 않으면 버튼을 숨깁니다. 장면·읽기 방식·단계 전환, 용어 풀이·수업 자료 열기, 닫기·페이지 이탈 때 재생을 중단합니다. API 동작 기준은 [MDN 음성 목록](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/getVoices), [음성 변경 이벤트](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/voiceschanged_event), [중단](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/cancel), [로컬 음성 속성](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisVoice/localService)을 확인했습니다. 음색·발음은 기기 음성에 따르며 캐릭터별 녹음은 아닙니다.
+
+**나의 활동**과 학년 마지막 화면에 15칸 스탬프판을 표시합니다. 기존 `read`, `quiz`, `gameDone`가 모두 true인 이야기만 도장을 찍고 영역 다섯 편·학년 열다섯 편을 완주하면 배지를 표시합니다. 보상을 별도로 저장하지 않아 프로필 변경·가져오기·삭제 시 현재 기록과 항상 일치합니다. 빈 메모로 그림·구술 활동을 마친 경우도 인정합니다. 스탬프를 누르면 해당 이야기로 이동합니다.
+
+학년 선택과 마지막 이야기·단계는 `ecotoon-library-v1:<profileId>`에 별도로 보관합니다. 프로필마다 구분되고 학습 기록을 비우거나 프로필을 삭제할 때 같이 지웁니다. 저장이 막힌 기기에서도 이번 탭에서 사용할 수 있습니다. 학년을 고르면 회차 목록과 이어 보기 링크를 제공합니다. 저학년 활동의 그림/대화 체크는 기존 `note` 안에 문장으로 저장하여 기록 형식을 유지합니다. 게임 완료 시 해당 시점의 활동 메모(최대 300자 미리보기)와 선택 이유를 비교할 수 있습니다.
+
+검증: `node scripts/verify-rewards.cjs`와 기존 모든 `verify-*.cjs`. 브라우저 `scripts/smoke-speech.cjs`는 API 미지원·빈 목록·조회 오류·지연 음성·외국어/원격 음성 제외·재생/오류/중단 및 1920px 전자칠판을 모의 음성 엔진으로 확인합니다. 실제 스피커의 발음 품질은 기기에서 확인해야 합니다. `scripts/smoke-rewards.cjs`는 네 화면 폭에서 스탬프·배지·새 프로필·삭제·학년 기억·이어 보기·그림 활동 저장을 검사합니다. `smoke-flow`, `smoke-classroom`, `smoke-design`, `smoke-media`도 최종 코드로 통과했습니다. 최종 첫 화면은 네 폭 모두 1.5MB 이하이며 목록 전체 이미지는 2.13MB입니다.
+
+## 개선 계획 진행 상태
+
+WP0~WP10의 로컬 코드 구현과 자동 검증을 완료했습니다. WP4~WP10은 순서대로 검토·병합할 누적 PR이며, 운영 사이트 반영은 해당 PR의 병합 뒤 진행됩니다. 기존 삽화 원본 확보/외부 백업, 720·1080px 고해상도 재제작, 별도 캐릭터 모델 시트·반응 포즈·녹음 파일 제작, 교사의 교육적 검수는 코드 완료와 구분되는 후속 작업입니다. 현재 WebP 원본은 저장소에서 보존합니다.

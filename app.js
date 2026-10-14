@@ -18,13 +18,14 @@ const classroomStore=window.classroomStore=ClassroomStorage.create({
  getItem:key=>localStorage.getItem(key),setItem:(key,value)=>localStorage.setItem(key,value),removeItem:key=>localStorage.removeItem(key)
 },STORIES);
 let progress=classroomStore.current().records;
+grade=EcoLibrary.read(classroomStore.current().id).grade;
 function save(){
  const ok=classroomStore.save(progress);
  if(window.refreshClassroomStatus)window.refreshClassroomStatus();
  if(!ok&&$('#reader').open)$('#linkMessage').textContent=classroomStore.issue();
  return ok;
 }
-window.applyClassroomProfile=()=>{progress=classroomStore.current().records;render();};
+window.applyClassroomProfile=()=>{progress=classroomStore.current().records;selectGrade(EcoLibrary.read(classroomStore.current().id).grade,false);};
 function record(id){
  const p=progress[id];return p&&typeof p==='object'?p:{};
 }
@@ -38,8 +39,9 @@ const growth=document.createElement('section');growth.className='growth-gallery'
 growth.innerHTML='<div class="section-heading"><div><div class="eyebrow">한 해 한 해, 함께 자라는 친구들</div><h2>지우와 하린의 여섯 번의 성장</h2></div><p>같은 친구, 조금씩 깊어지는 이야기</p></div><div class="growth-steps">'+profiles.map((p,i)=>'<button data-growth="'+(i+1)+'"><div class="art-crop"><div class="growth-art age-'+(i+1)+' art-0" role="img" aria-label="'+(i+1)+'학년 지우와 하린"></div></div><b>'+(i+1)+'학년</b><span>'+p.name+'</span></button>').join('')+'</div><p class="growth-note">노랑 옷의 지우와 초록 옷의 하린. 외형과 말투가 학년과 함께 자라요.</p>';
 $('#library').before(growth);
 growth.querySelectorAll('[data-growth]').forEach(button=>button.onclick=()=>{selectGrade(+button.dataset.growth);$('#library').scrollIntoView({behavior:'auto'});});
-function selectGrade(value){
+function selectGrade(value,remember=true){
  grade=value;
+ if(remember)EcoLibrary.save(classroomStore.current().id,{grade});
  document.querySelectorAll('#grades button').forEach(b=>{const selected=+b.dataset.grade===grade;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',selected);});
  render();
 }
@@ -49,6 +51,11 @@ document.querySelectorAll('[data-category]').forEach(button=>{
  button.onclick=()=>{category=button.dataset.category;document.querySelectorAll('[data-category]').forEach(b=>{const selected=b.dataset.category===category;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',selected);});render();};
 });
 function render(){
+ $('#cards').classList.toggle('episode-list',!!grade);
+ $('#libraryHint').textContent=grade?grade+'학년 이야기를 회차 순서대로 만나요.':'몇 학년이에요? 내 학년을 고르면 이어서 읽기 편해요.';
+ const last=Flow.parseRoute(EcoLibrary.read(classroomStore.current().id).last||'',STORIES);
+ const resume=last&&(!grade||STORIES.find(s=>s.id===last.id).grade===grade)?STORIES.find(s=>s.id===last.id):grade?Flow.gradeProgress(STORIES,grade,progress).next:null;
+ $('#libraryResume').innerHTML=resume?'<a href="'+Flow.storyHash(resume.id,last?.id===resume.id?last.step:'comic')+'">이어서 보기 · '+escapeHTML(resume.subtitle)+' →</a>':'';
  const shown=STORIES.filter(s=>(!grade||s.grade===grade)&&(category==='전체'||s.area===category));
  $('#count').textContent='총 '+shown.length+'편 · 모두 8장면';
  $('#cards').innerHTML=shown.map(s=>{
@@ -72,6 +79,7 @@ document.querySelectorAll('dialog').forEach(dialog=>{
        if(history.state&&history.state.ecotoonReader)history.back();
        else history.replaceState(null,'','#library');
      }
+     render();
      const opener=document.querySelector('[data-story="'+closedId+'"]')||$('#grades button.selected');
      if(opener)opener.focus({preventScroll:true});
    }
@@ -124,6 +132,7 @@ function setActiveStep(step){
  if(step!=='comic')$('#returnToLearning').hidden=true;
  $('#reader').style.setProperty('--reader-offset',($('.reader-toolbar').offsetHeight+18)+'px');
  const hash=Flow.storyHash(readerId,step);
+ EcoLibrary.save(classroomStore.current().id,{last:hash});
  if(location.hash!==hash)history.replaceState({ecotoonReader:true},'',hash);
 }
 function scrollToStep(key){
@@ -197,7 +206,7 @@ function readerGame(story){
    window.MiniGames.mount(root,story,stars=>{
     progress[story.id]={...record(story.id),gameDone:true,gameStars:Math.max(+record(story.id).gameStars||0,stars)};
     const ok=save();render();updateSteps();updateGameAvailability(story);return ok;
-   });
+   },{activityNote:()=>$('#reflection').value});
    scrollToStep('game');
  };
 }
@@ -240,6 +249,7 @@ function mountReader(id){
   </section>
   <section id="stage-activity" class="activity" data-learning-stage="activity" tabindex="-1" aria-label="④ 활동">
     <button type="button" class="teacher-link" data-teacher>그림 활동지 · 인쇄</button><h3 class="learning-heading">④ 활동 · 생활로 옮기기</h3><p>${escapeHTML(story.activity)}</p>
+    ${story.grade<=2?'<fieldset class="activity-ways"><legend>어떻게 활동했나요? (선택)</legend><label><input type="checkbox" value="그림으로 했어요" data-activity-way> 그림으로 했어요</label><label><input type="checkbox" value="어른과 이야기했어요" data-activity-way> 어른과 이야기했어요</label></fieldset>':''}
     <label for="reflection">나의 생각과 실천 기록 <span class="optional-note">(선택)</span></label><textarea maxlength="10000" id="reflection" placeholder="이름·연락처 없이 나의 생각을 적어요. 글 대신 어른과 이야기하거나 그림으로 활동해도 좋아요."></textarea><small>기록은 현재 기기의 이 브라우저에만 저장돼요.</small><br>
     <button class="action" id="saveActivity">활동 마치고 게임 열기 →</button><p id="saveMessage" role="status" aria-live="polite"></p>
   </section>
@@ -265,6 +275,8 @@ function mountReader(id){
  });
  if(record(id).quiz===true)$('.feedback').textContent='이 퀴즈를 이미 맞혔어요. 다시 풀어 볼 수 있어요.';
  $('#saveActivity').onclick=()=>{
+   const ways=[...document.querySelectorAll('[data-activity-way]:checked')].map(b=>b.value).filter(value=>!$('#reflection').value.includes(value));
+   if(ways.length){const added='활동 방법: '+ways.join(', ');if($('#reflection').value.length+added.length+1<=10000)$('#reflection').value=[$('#reflection').value,added].filter(Boolean).join('\n');}
    progress[id]={...record(id),read:true,note:$('#reflection').value};
    const ok=save();
    $('#saveMessage').textContent=ok?'활동을 저장했어요! 게임이 열렸어요. 진행하던 게임은 그대로 이어져요.':'활동을 마쳤어요. 브라우저 저장은 사용할 수 없지만 이번 화면에서 게임을 할 수 있어요.';
@@ -284,6 +296,7 @@ function showGradeEnd(story){
  const summary=Flow.gradeProgress(STORIES,story.grade,progress),end=$('#gradeEnd');
  const complete=summary.completed===summary.total;
  end.innerHTML='<span class="completion-symbol" aria-hidden="true">'+(complete?'★':'🌱')+'</span><h2>'+story.grade+'학년 '+(complete?'학습을 모두 마쳤어요!':'배움을 차곡차곡 모아요')+'</h2><p>읽기·퀴즈·활동·게임까지 마친 이야기 <strong>'+summary.completed+' / '+summary.total+'편</strong></p><p>'+(complete?'열다섯 이야기에서 만난 배움을 생활 속에서도 써 보세요.':'마지막 편에 왔어요. 아직 남은 이야기는 천천히 이어 가도 좋아요.')+'</p>'+(summary.next?'<button class="action" id="resumeGrade">남은 이야기 이어 보기 →</button>':'')+'<button class="back-to-library" id="gradeLibrary">'+story.grade+'학년 전체 목록 보기</button>';
+ end.insertAdjacentHTML('beforeend',EcoRewards.render(STORIES,progress,story.grade));bindStamps(end);
  end.hidden=false;
  if(summary.next)$('#resumeGrade').onclick=()=>{
    const p=record(summary.next.id);
@@ -301,6 +314,7 @@ function activities(){
  $('#infoTitle').textContent=classroomStore.current().emoji+' '+classroomStore.current().name+'의 활동';
  const done=STORIES.filter(s=>{const p=record(s.id);return p.read||p.quiz||p.note||p.gameDone;});
  $('#infoBody').innerHTML='<h2>배움과 실천이 차곡차곡 🌱</h2><div class="activity-stats"><span>읽기 <b>'+done.filter(s=>record(s.id).read).length+' / 90</b></span><span>미니게임 <b>'+done.filter(s=>record(s.id).gameDone).length+' / 90</b></span></div><p>학년마다 15편씩, 경제·노동·금융 5편씩 만나요.</p><p>기록은 이 브라우저에만 보관됩니다.</p><div id="savedItems"></div>';
+ $('#savedItems').insertAdjacentHTML('beforebegin',EcoRewards.render(STORIES,progress));bindStamps($('#infoBody'));
  if(!done.length)$('#savedItems').textContent='아직 활동이 없어요. 내 학년 이야기부터 만나 볼까요?';
  done.forEach(s=>{
    const p=record(s.id),item=document.createElement('div');item.className='activity-item';
@@ -312,6 +326,8 @@ function activities(){
  });open($('#info'));
 }
 $('#activityNav').onclick=activities;$('#activityButton').onclick=activities;
+function bindStamps(root){root.querySelectorAll('[data-stamp]').forEach(button=>button.onclick=()=>{const id=button.dataset.stamp,p=record(id);readStory(id,p.read&&!p.quiz?'quiz':p.read&&!p.gameDone?'game':'comic')});}
+$('#libraryResume').onclick=event=>{const link=event.target.closest('a');if(!link||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;const route=Flow.parseRoute(link.getAttribute('href'),STORIES);if(route){event.preventDefault();readStory(route.id,route.step);}};
 $('#guideNav').onclick=()=>{
  $('#infoTitle').textContent='선생님 안내';
  $('#infoBody').innerHTML='<h2>함께 자라는 경제 이야기</h2><p>1~6학년 각 15편, 경제·노동·금융 각 5편으로 총 90편입니다. 학년별 성장형 지우·하린과 만화 안의 말풍선으로 8장면을 읽습니다. 장면마다 상황 묘사와 두 친구의 대화를 읽으며 사건·선택·결과를 따라갑니다. 각 이야기의 8장면은 상황·행동·표정에 맞춰 새로 제작한 전용 삽화로 이어집니다.</p><ol><li>경험을 나누고 학년별 이야기를 고릅니다.</li><li>만화의 8장면을 읽고 누가 무엇을 원했는지, 무엇을 골랐고 어떤 결과가 생겼는지 이야기합니다.</li><li>배운 개념을 정리하고 퀴즈와 생활 활동을 합니다. 저학년은 그림이나 구술도 가능합니다.</li><li>활동 마치고 게임 열기를 누르면 주제별 미니게임이 열립니다.</li><li>게임 결과와 생활 활동을 연결해 다시 생각합니다.</li></ol><p>노래 활동은 새로 만든 리듬을 사용합니다. 금융·무역·창업 게임은 놀이 돈과 가상 상황으로만 진행하며 실제 거래나 투자 추천이 아닙니다. 직업·계약 체험은 안전한 모의 활동이며 실제 취업이 아닙니다.</p><p>기록은 기기 내 브라우저에만 저장됩니다. 상단 별명 버튼에서 학생별 프로필을 선택하고 기록을 JSON 파일로 저장·불러올 수 있습니다. 공용 기기에서는 수업 전에 내 별명을 확인하고 수업 후 필요한 기록을 저장한 뒤 지워 주세요. 프로필은 비밀번호가 없는 구분 기능이며 같은 기기 사용자가 모두 열어 볼 수 있습니다. 계정·교사용 수집·자동 동기화는 제공하지 않습니다. 이름과 연락처, 실제 계좌·신용 정보를 입력하지 않도록 안내해 주세요.</p>';

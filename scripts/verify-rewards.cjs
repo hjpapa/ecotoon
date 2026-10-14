@@ -1,0 +1,16 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const stories=vm.runInNewContext(fs.readFileSync('catalog.js','utf8')+';STORIES'),ctx={window:{}};
+vm.runInNewContext(fs.readFileSync('rewards.js','utf8'),ctx);const r=ctx.window.EcoRewards;
+assert.equal(r.complete({read:true,quiz:true,gameDone:true,note:''}),true,'Oral/art activity does not require a written note');
+for(const p of [{},{read:true},{read:true,quiz:true},{quiz:true,gameDone:true},{read:true,quiz:'true',gameDone:true}])assert.equal(r.complete(p),false);
+const records=Object.fromEntries(stories.filter(s=>s.grade===1).map(s=>[s.id,{read:true,quiz:true,gameDone:true}]));
+records.unknown={read:true,quiz:true,gameDone:true};
+const summary=r.summarize(stories,records);assert.equal(summary[0].earned,true);assert.equal(summary[0].completed,15);assert.equal(summary[0].domains.filter(d=>d.earned).length,3);
+assert.equal(summary.slice(1).some(g=>g.earned),false);assert.equal(summary.every(g=>g.stamps.length===15),true);
+delete records['g1-05'].quiz;assert.equal(r.summarize(stories,records)[0].earned,false);assert.equal(r.summarize(stories,records)[0].domains[0].earned,false);
+assert.equal(r.summarize(stories,{})[0].completed,0,'Clear/import recomputes without stale badges');
+const memory=new Map(),storage={getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,v),removeItem:k=>memory.delete(k)};
+const c={window:{},localStorage:storage};vm.runInNewContext(fs.readFileSync('library.js','utf8'),c);const lib=c.window.EcoLibrary;
+lib.save('a',{grade:2,last:'#/g2-03/quiz'});lib.save('b',{grade:5,last:'#/g5-01'});assert.equal(lib.read('a').grade,2);lib.clear('a');assert.equal(lib.read('a').last,null);assert.equal(lib.read('b').grade,5);
+memory.set('ecotoon-library-v1:bad','{"grade":99,"last":"javascript:alert(1)"}');assert.equal(lib.read('bad').grade,0);assert.equal(lib.read('bad').last,null);
+console.log('PASS: actual completion flags, 15 stamps / 3 domain badges per grade, no stale rewards, isolated and validated library preferences.');
