@@ -22,6 +22,7 @@
     let active = true, touch = null, ownsFullscreen = false, destroyed = false;
     const on = (element, event, handler, options = {}) => element.addEventListener(event,handler,{...options,signal});
     reader.dataset.grade = story.grade;
+    const speech=window.EcoSpeech.attach(reader);
     q('#readerModes').innerHTML = '<div class="scene-tools"><button id="sceneMenu" type="button" aria-expanded="false" aria-controls="sceneList"></button><button id="readingMode" type="button"></button><button id="boardMode" type="button" aria-pressed="false">전자칠판</button></div><progress id="sceneProgress" max="'+panels.length+'" value="1" aria-label="웹툰 장면 진행"></progress><div id="sceneList" class="scene-list" hidden>'+panels.map((panel,i)=>'<button type="button" data-jump="'+i+'" aria-label="'+(i+1)+'장면으로 이동">'+(i+1)+'</button>').join('')+'</div>';
     q('#sceneControls').innerHTML = '<button id="previousScene" type="button">← 이전 장면</button><span id="sceneStatus" role="status" aria-live="polite"></span><button id="nextScene" type="button">다음 장면 →</button><button id="readerFullscreen" type="button" hidden>화면 꽉 채우기</button>';
     function fitBoardImage() {
@@ -80,6 +81,7 @@
       if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
     }
     function changeMode(next, focus = true) {
+      speech.stop();
       if (next === 'board' && mode !== 'board') lastMode = mode;
       if (mode === 'board' && next !== 'board') leaveFullscreen();
       mode = next;revealed = 0;touch = null;
@@ -88,6 +90,7 @@
       if (focus) callbacks.onComic();
     }
     function showScene(value) {
+      speech.stop();
       index = Math.max(0,Math.min(panels.length-1,value));revealed = 0;
       q('#sceneList').hidden = true;q('#sceneMenu').setAttribute('aria-expanded','false');
       paint();callbacks.onComic();
@@ -97,6 +100,7 @@
       }
     }
     function next() {
+      speech.stop();
       const frame = advance(mode,index,revealed,counts);
       if (frame.done) {
         if (mode === 'board') changeMode(lastMode,false);
@@ -107,6 +111,7 @@
       else panels[index].focus({preventScroll:true});
     }
     function previous() {
+      speech.stop();
       const frame = retreat(mode,index,revealed,counts);
       index=frame.index;revealed=frame.revealed;paint();
       if (mode !== 'board') callbacks.onComic();
@@ -161,6 +166,7 @@
     return {
       showScene,
       setStage(step) {
+        if(step!=='comic'||!active)speech.stop();
         active=step === 'comic';touch=null;
         if (!active && mode === 'board')changeMode(lastMode,false);
         q('#readerModes').hidden=!active;
@@ -172,10 +178,10 @@
         const top=q('.reader-toolbar').getBoundingClientRect().bottom+32;
         let nextIndex=0;
         panels.forEach((panel,i)=>{if(panel.getBoundingClientRect().top<=top)nextIndex=i;});
-        if(index!==nextIndex){index=nextIndex;paint();}
+        if(index!==nextIndex){index=nextIndex;speech.stopOutside(panels[index]);paint();}
       },
       destroy() {
-        destroyed=true;lifetime.abort();if(resize)resize.disconnect();leaveFullscreen();
+        destroyed=true;speech.destroy();lifetime.abort();if(resize)resize.disconnect();leaveFullscreen();
         delete reader.dataset.readingMode;delete reader.dataset.grade;
       }
     };

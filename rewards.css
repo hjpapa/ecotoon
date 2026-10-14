@@ -1,0 +1,20 @@
+.speech-read{display:block;margin-top:8px;min-height:44px;min-width:44px;border:1px solid #687b5f;border-radius:8px;padding:8px 12px;background:#fffefa;color:#243c32;font:inherit;font-size:14px}
+.speech-read[aria-pressed="true"]{background:#236e4d;color:white}
+.activity-ways{border:1px solid #819780;border-radius:8px;padding:12px;margin:14px 0}.activity-ways label{display:flex;align-items:center;gap:8px;min-height:44px;font-size:16px}.activity-ways input{width:44px;height:44px;accent-color:#236e4d;flex-shrink:0}
+.game-connection{text-align:left;margin-top:18px;padding:12px;border:1px solid #819780;border-radius:8px;font-size:16px;line-height:1.8}.game-connection summary{min-height:44px;cursor:pointer;font-weight:700}.game-connection p{white-space:pre-wrap;overflow-wrap:anywhere}
+.reward-board h2{font-size:23px;margin:22px 0 8px}.reward-board p{font-size:16px;line-height:1.8}
+.grade-stamps{margin:22px 0;padding:16px;border:1px solid #b3c0a8;border-radius:14px;background:#fffefa}
+.stamp-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.stamp-heading h3{font-size:18px;margin:0}.grade-badge{display:flex;align-items:center;font-size:14px;font-weight:700;color:#4e5c46}
+.grade-badge[data-earned="true"]{color:#76500d}.reward-emblem{width:46px;height:52px;flex-shrink:0;margin-right:8px}
+.domain-badges{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}.domain-badge{font-size:13px;padding:5px 8px;border-radius:16px}
+.stamp-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;list-style:none;padding:0;margin:0}
+.stamp{display:grid;place-items:center;gap:4px;width:100%;min-width:44px;min-height:70px;padding:8px 4px;border:2px dashed currentColor;border-radius:12px;font-size:19px;font-weight:700}
+.stamp small{font-size:12px}.stamp[data-complete="true"]{border-style:solid;box-shadow:inset 0 0 0 3px #fffefa;animation:stamp-in .2s ease-out}
+.reward-board .economy{color:var(--economy);background:var(--economy-bg)}.reward-board .labor{color:var(--labor);background:var(--labor-bg)}.reward-board .finance{color:var(--finance);background:var(--finance-bg)}
+@keyframes stamp-in{from{transform:scale(.95)}to{transform:scale(1)}}
+#libraryHint{font-size:16px;line-height:1.7;color:#42553c}
+#libraryResume a{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:12px;margin:12px 0 0;border:1px solid #839575;border-radius:8px;background:#eff4e7;font-size:16px;color:#244d37;font-weight:700}
+.cards.episode-list{grid-template-columns:1fr;gap:12px}.episode-list .card-link{display:grid;grid-template-columns:180px minmax(0,1fr);align-items:center}.episode-list .card p{min-height:0}.episode-list .card h3{margin:4px 0}.episode-list .card-body{padding:14px}.episode-list .card-bottom{margin-top:8px;padding-top:8px}.episode-list .cover.episode-cover{height:100%;min-height:150px;aspect-ratio:auto}.episode-list .episode-art img{object-fit:contain;background:#f6eed8}
+@media(max-width:520px){.episode-list .card-link{grid-template-columns:96px minmax(0,1fr)}.episode-list .card-body{padding:10px}.episode-list .card p{font-size:13px}.episode-list .grade-label{left:4px;top:4px;padding:4px}.episode-list .read-label{display:none}.stamp-grid{gap:6px}.grade-stamps{padding:12px}}
+@media(prefers-reduced-motion:reduce){.stamp[data-complete="true"]{animation:none}}
