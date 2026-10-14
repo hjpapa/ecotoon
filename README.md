@@ -16,7 +16,11 @@
 python3 -m http.server 8000
 ```
 
-브라우저에서 `http://localhost:8000`을 엽니다. 정적 호스팅에는 저장소 루트의 HTML·JS·CSS와 `assets/`를 함께 배포하세요. Vercel 설정은 `vercel.json`에 있습니다.
+브라우저에서 `http://localhost:8000`을 엽니다. Windows에서는 `python -m http.server 8000 --bind 127.0.0.1`로 실행할 수 있습니다. 빌드 과정은 필요하지 않습니다.
+
+Vercel 설정은 `vercel.json`에 있고, `.vercelignore`의 허용 목록으로 실제 서비스 파일만 배포합니다. 대상은 `index.html`, `style.css`, `growth.css`, `catalog.js`, `games.js`, `app.js`, `vercel.json`과 사용 중인 WebP 삽화입니다. PNG 참고 원본, `production/`, `scripts/`, `docs/`, 이전 버전의 `stories.js`·`curriculum.js`, 로컬 환경 파일과 검증 결과는 배포에서 제외합니다. 원본과 제작 자료는 저장소에 보관합니다. 다른 정적 호스팅에도 같은 파일 목록을 사용하세요.
+
+새 CSS·JS·이미지를 추가할 때는 `.vercelignore`도 함께 갱신하고 배포 검사를 실행하세요. 이 허용 목록은 배포 파일을 줄이며, 첫 화면 이미지 전송량을 줄이는 썸네일 작업은 개선 계획 WP8에서 별도로 진행합니다.
 
 ## 이야기와 게임
 
@@ -51,3 +55,13 @@ Chromium 브라우저에서 90개 이야기의 8장면, 학년·영역 필터, �
 ```sh
 node scripts/verify-episodes.cjs
 ```
+
+배포 대상에서 필요한 파일이 누락되거나 미사용 파일이 포함되지 않았는지 확인하려면 다음 명령을 실행합니다. Node.js와 Git이 필요하며, 패키지 설치나 빌드는 필요하지 않습니다. HTML·CSS와 이야기 데이터의 이미지 참조를 대조하고, Git의 ignore 규칙으로 `.vercelignore`를 검사합니다. 새 동적 에셋 참조 방식을 도입할 때는 이 검사도 갱신하세요.
+
+```sh
+node scripts/verify-deployment.cjs
+```
+
+WP0에서는 구형 `.panel`·`.speech`·`.comic-scene` 및 미사용 시트 위치 스타일을 제거했습니다. 현재 성장 갤러리의 `.art-0`, 웹툰의 `.integrated-panel`·`.integrated-speech` 등 실제 사용 스타일은 유지합니다. 검증용 스크린샷과 임시 파일은 Git·배포에서 제외되는 `output/playwright/`에 둡니다.
+
+WP0 화면 검증은 Chromium에서 360·390·768·1280px의 메인, 목록, 첫 이야기 리더와 동전 게임을 정리 전 CSS와 비교합니다. 활동 저장 전 잠금과 저장 후 게임 진입도 확인합니다. 웹툰 말풍선의 기존 겹침과 작은 글자는 이후 WP1·WP2에서 개선할 대상입니다.

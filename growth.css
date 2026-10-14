@@ -10,13 +10,9 @@
 .growth-note{font-size:11px;color:#71836b;text-align:center;line-height:1.8;margin:14px 0}
 .growth-art{background-repeat:no-repeat;background-size:300% 400%;background-color:#f4eddb}
 .age-1{background-image:url('assets/growth-grade-1.webp')}.age-2{background-image:url('assets/growth-grade-2.webp')}.age-3{background-image:url('assets/growth-grade-3.webp')}.age-4{background-image:url('assets/growth-grade-4.webp')}.age-5{background-image:url('assets/growth-grade-5.webp')}.age-6{background-image:url('assets/growth-grade-6.webp')}
-.art-0{background-position:0% 0%}.art-1{background-position:50% 0%}.art-2{background-position:100% 0%}
-.art-3{background-position:0% 33.333333%}.art-4{background-position:50% 33.333333%}.art-5{background-position:100% 33.333333%}
-.art-6{background-position:0% 66.666667%}.art-7{background-position:50% 66.666667%}.art-8{background-position:100% 66.666667%}
-.art-9{background-position:0% 100%}.art-10{background-position:50% 100%}.art-11{background-position:100% 100%}
+.art-0{background-position:0% 0%}
 .art-crop{position:relative;overflow:hidden}
 .art-crop>.growth-art{position:absolute;inset:0;transform:scale(1.12)}
-.cover.art-crop{height:auto;aspect-ratio:1.2}
 .cover.episode-cover{height:auto;aspect-ratio:var(--episode-ratio);overflow:hidden}
 .episode-art,.episode-tile{position:absolute;inset:0;overflow:hidden}
 .episode-tile{transform:scale(1.025)}
