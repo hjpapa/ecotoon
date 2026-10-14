@@ -12,7 +12,7 @@
   function finish(result={}){
    if(finished)return;finished=true;
    const stars=result.stars||(errors===0?3:errors<=2?2:1),saved=onComplete(stars);
-   q('#game-reward').innerHTML='<div class="game-victory"><span class="stars">'+'★'.repeat(stars)+'☆'.repeat(3-stars)+'</span><h4>배움 미션 완료!</h4><p>'+esc(result.text||game.wrapUp||'선택한 결과를 살펴봤어요. 생활 활동에서도 그 까닭을 설명해 보세요.')+'</p><small>'+(saved?'게임 완료 기록을 이 브라우저에 저장했어요.':'이번 화면에는 기록됐지만 브라우저 저장 공간을 사용할 수 없어요.')+'</small><button class="action game-replay">다시 도전하기 ↻</button></div>';
+   q('#game-reward').innerHTML='<div class="game-victory"><span class="stars">'+'★'.repeat(stars)+'☆'.repeat(3-stars)+'</span><h4>배움 미션 완료!</h4>'+EcoMedia.reaction(story.grade,'celebrate')+'<p>'+esc(result.text||game.wrapUp||'선택한 결과를 살펴봤어요. 생활 활동에서도 그 까닭을 설명해 보세요.')+'</p><small>'+(saved?'게임 완료 기록을 이 브라우저에 저장했어요.':'이번 화면에는 기록됐지만 브라우저 저장 공간을 사용할 수 없어요.')+'</small><button class="action game-replay">다시 도전하기 ↻</button></div>';
    q('.game-replay').onclick=()=>mount(root,story,onComplete);
   }
   const ctx={root,story,game,board,q,esc,shuffle,tell,finish,get finished(){return finished}};

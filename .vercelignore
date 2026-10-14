@@ -13,11 +13,15 @@
 !/vercel.json
 !/assets/
 /assets/*
-!/assets/economy-world.webp
-!/assets/growth-grade-*.webp
 !/assets/episodes/
 /assets/episodes/*
-!/assets/episodes/*.webp
+!/assets/episodes/g*/
+!/assets/episodes/g*/*.webp
+!/assets/covers/
+!/assets/covers/*.webp
+!/assets/ui/
+!/assets/ui/*.webp
+!/media.js
 
 !/design.css
 !/icons.js
