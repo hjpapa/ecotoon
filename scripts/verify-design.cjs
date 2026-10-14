@@ -9,7 +9,7 @@ const luminance=hex=>hex.slice(1).match(/../g).map(v=>parseInt(v,16)/255).map(v=
 const pairs=[['ink','cream'],['muted','cream'],['ink','jiwoo'],['ink','harin'],...['economy','labor','finance','correct','wrong','locked','hint'].map(name=>[name,name+'-bg'])];
 tokens.white='#ffffff';pairs.push(['white','brand']);
 for(const [fg,bg] of pairs){const a=luminance(tokens[fg]),b=luminance(tokens[bg]);assert.ok((Math.max(a,b)+.05)/(Math.min(a,b)+.05)>=4.5,fg+'/'+bg);}
-for(const file of ['style.css','growth.css','reader.css','design.css']){
+for(const file of ['style.css','growth.css','reader.css','design.css','classroom.css']){
  const source=read(file);
  assert.ok(!/@import|https?:\/\//.test(source),'No external CSS/font requests: '+file);
  for(const m of source.matchAll(/font-size:\s*(\d+)px/g))assert.ok(+m[1]>=12,'Small font: '+file);

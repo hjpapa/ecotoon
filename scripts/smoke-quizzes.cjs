@@ -9,7 +9,7 @@ async(page)=>{
  const stories=await page.evaluate(()=>STORIES.map(s=>({id:s.id,grade:s.grade,answer:s.quiz.answer,hintPanel:s.quiz.hintPanel,explain:s.quiz.explain,hint:s.quiz.hint,recap:s.recap,lesson:s.lesson})));
  for(const width of [360,390,768,1280]){
   await page.setViewportSize({width,height:900});
-  await page.evaluate(()=>{localStorage.removeItem('ecotoon-progress-v3');localStorage.removeItem('ecotoon-progress');});await page.reload();
+  await page.evaluate(()=>{localStorage.removeItem('ecotoon-classroom-v1');localStorage.removeItem('ecotoon-progress-v3');localStorage.removeItem('ecotoon-progress');});await page.reload();
   for(const story of stories){
    const id=story.id;
    await page.goto(origin+'/#/'+id+'/summary');await settle();
@@ -37,7 +37,7 @@ async(page)=>{
    const wrong=(story.answer+1)%3;
    await page.locator('[data-answer="'+wrong+'"]').click();
    check((await page.locator('.feedback').innerText()).includes(story.hint),id+' wrong hint');
-   check(await page.evaluate(id=>!JSON.parse(localStorage.getItem('ecotoon-progress-v3')||'{}')[id]?.quiz,id),id+' wrong answer must not complete');
+   check(await page.evaluate(id=>!(()=>{const d=JSON.parse(localStorage.getItem('ecotoon-classroom-v1')||'null');return d?d.profiles.find(p=>p.id===d.activeId).records:{};})()[id]?.quiz,id),id+' wrong answer must not complete');
    await page.locator('#quizSceneButton').click();await settle();
    check(new URL(page.url()).hash==='#/'+id,id+' review comic URL');
    check(await page.locator('#sceneProgress').getAttribute('value')===String(story.hintPanel+1),id+' hint scene');
@@ -50,7 +50,7 @@ async(page)=>{
    await page.locator('[data-answer="'+story.answer+'"]').click();
    check((await page.locator('.feedback').innerText()).includes(story.explain),id+' correct explanation');
    check(!(await page.locator('#quizSceneButton').isVisible()),id+' no stale hint button');
-   check(await page.evaluate(id=>JSON.parse(localStorage.getItem('ecotoon-progress-v3'))[id].quiz===true,id),id+' saves original quiz boolean');
+   check(await page.evaluate(id=>(()=>{const d=JSON.parse(localStorage.getItem('ecotoon-classroom-v1')||'null');return d?d.profiles.find(p=>p.id===d.activeId).records:{};})()[id].quiz===true,id),id+' saves original quiz boolean');
    check(await page.evaluate(()=>history.length)===historyLength,id+' review does not add history entries');
    if(story.id.endsWith('-01'))await page.screenshot({path:'output/playwright/wp3/quiz-'+story.grade+'-'+width+'.png'});
   }
@@ -69,7 +69,7 @@ async(page)=>{
  check(await page.locator('#reflection').inputValue()==='힌트를 봐도 남는 생각','Review preserves note');
  await page.goto(origin+'/#/g1-02/quiz');
  check(!(await page.locator('#returnToLearning').isVisible()),'New episode clears return action');
- const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('ecotoon-progress-v3'))['g1-01']);
+ const stored=await page.evaluate(()=>(()=>{const d=JSON.parse(localStorage.getItem('ecotoon-classroom-v1')||'null');return d?d.profiles.find(p=>p.id===d.activeId).records:{};})()['g1-01']);
  check(Object.keys(stored).every(k=>['quiz','read','note','gameDone','gameStars'].includes(k)),'No new progress schema');
  check(!errors.length,errors.join('; '));
  return {passed,compatibility:'Existing quiz records, retries, notes and running game retained',errors};

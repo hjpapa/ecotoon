@@ -1,0 +1,27 @@
+.profile-bar{max-width:1172px;margin:0 auto;padding:12px 0;border-bottom:1px solid #d7e0d1;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+#profileNav{padding:8px 14px;border:1px solid var(--brand);border-radius:8px;background:var(--surface);color:var(--ink);font-size:14px;font-weight:700}
+#profileStatus{margin:0;color:var(--muted);font-size:12px;flex:1;min-width:200px}
+#profilesDialog{width:min(720px,94vw)}
+#profileBody{padding:24px;line-height:1.8}
+#profileBody h3{font-size:18px;margin:0 0 12px}
+#profileBody p{font-size:16px;overflow-wrap:anywhere}
+#profileBody form,#profileBody section{padding:20px 0;border-top:1px solid #d7e0d1;margin-top:20px}
+#profileBody label{display:block;margin-top:14px;font-size:14px;font-weight:700}
+#profileBody input,#profileBody select{display:block;width:100%;min-height:44px;font:inherit;padding:8px;border:1px solid #687b64;border-radius:6px;background:var(--surface);color:var(--ink)}
+#profileBody input[type=file]{font-size:12px;min-width:0}
+#profileBody button{padding:10px 14px;font:inherit;min-height:44px;min-width:44px;border:1px solid #687b64;border-radius:8px;background:var(--surface);color:var(--ink);margin:8px 6px 0 0;overflow-wrap:anywhere}
+#profileBody .action,#profileBody button[aria-pressed=true]{background:var(--brand);color:#fff}
+#profileBody .danger{background:var(--wrong);color:#fff}
+#profileBody button:disabled{color:var(--locked);background:var(--locked-bg)}
+.profile-list{display:flex;gap:8px;flex-wrap:wrap}
+#deleteConfirm,#importPreview{padding:14px;background:var(--hint-bg);border-radius:8px;margin-top:12px}
+#profileMessage{position:sticky;bottom:0;padding:12px;background:var(--surface);border:1px solid #687b64;border-radius:8px;color:var(--ink)}
+#profileMessage:empty{display:none}
+@media(max-width:1240px){.profile-bar{margin:0 24px}}
+@media(max-width:800px){
+ header{height:auto;min-height:74px;flex-wrap:wrap;padding:14px 20px;gap:10px}
+ header nav{display:flex;flex-wrap:wrap;gap:12px;width:100%;justify-content:space-between}
+ header nav a,header nav button:last-child{display:inline-flex}
+ #profileBody{padding:16px}
+ .profile-bar{margin:0 20px;gap:8px}
+}

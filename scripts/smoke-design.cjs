@@ -52,11 +52,11 @@ async (page) => {
   await page.locator('#reader .close').click();await page.locator('#reader').waitFor({state:'hidden'});
   check(await page.locator('[data-story="g1-01"]').evaluate(el=>el===document.activeElement),'Restore card focus');
   await page.locator('#activityNav').click();await audit(width+' activity dialog');await page.locator('#info .close').click();
-  // Teacher entry is hidden on small screens until WP5; inspect its dialog at every width.
-  await page.evaluate(()=>document.querySelector('#guideNav').click());await audit(width+' teacher dialog');await page.locator('#info .close').click();
+  await page.locator('#guideNav').click();await audit(width+' teacher dialog');await page.locator('#info .close').click();
+  await page.locator('#profileNav').click();await audit(width+' profiles dialog');await page.locator('#profilesDialog .close').click();
   const games=await page.evaluate(()=>[...new Set(STORIES.map(s=>s.game.type))].map(type=>STORIES.find(s=>s.game.type===type).id));
   for(const id of games){
-   await page.evaluate(id=>localStorage.setItem('ecotoon-progress-v3',JSON.stringify({[id]:{read:true}})),id);
+   await page.evaluate(id=>{localStorage.removeItem('ecotoon-classroom-v1');localStorage.setItem('ecotoon-progress-v3',JSON.stringify({[id]:{read:true}}));},id);
    await page.goto(origin+'/#/'+id+'/game');await page.reload();
    await page.locator('#startGame').click();await audit(width+' game '+id);
    await page.locator('[data-stage="quiz"]').click();

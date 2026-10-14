@@ -16,7 +16,7 @@ async (page) => {
   };
   await page.goto(origin);
   await page.evaluate(() => {
-    localStorage.removeItem('ecotoon-progress-v3');
+    localStorage.removeItem('ecotoon-classroom-v1');localStorage.removeItem('ecotoon-progress-v3');
     localStorage.removeItem('ecotoon-progress');
   });
   await page.reload();
@@ -104,7 +104,7 @@ async (page) => {
   await page.locator('#saveActivity').click();
   check(await page.locator('#miniGamePlay').innerHTML() === victory, 'Resaving must preserve victory screen');
   check(await page.locator('[data-story="g1-01"] .card-progress [data-complete="true"]').count() === 4, 'Four card progress markers complete');
-  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('ecotoon-progress-v3'))['g1-01']);
+  const stored = await page.evaluate(() => (()=>{const d=JSON.parse(localStorage.getItem('ecotoon-classroom-v1')||'null');return d?d.profiles.find(p=>p.id===d.activeId).records:{};})()['g1-01']);
   check(stored.read && stored.quiz && stored.gameDone && stored.gameStars === 3 && stored.note.includes('완료 후'), 'Original v3 fields preserved');
   check(Object.keys(stored).sort().join(',') === 'gameDone,gameStars,note,quiz,read', 'No record schema change');
   await page.reload();
@@ -146,7 +146,7 @@ async (page) => {
   await page.evaluate(() => {
     const progress = {};
     for (let n=1;n<=15;n++) progress['g6-'+String(n).padStart(2,'0')] = {read:true,quiz:true,note:'',gameDone:true,gameStars:2};
-    localStorage.setItem('ecotoon-progress-v3', JSON.stringify(progress));
+    localStorage.removeItem('ecotoon-classroom-v1');localStorage.setItem('ecotoon-progress-v3', JSON.stringify(progress));
   });
   await page.goto(origin + '/#/g6-15/game');
   await page.reload();
@@ -155,7 +155,7 @@ async (page) => {
   check(await page.locator('#resumeGrade').count() === 0, 'No fake next story after grade completion');
   checks.push('Fully completed grade confirmation');
   await page.evaluate(() => {
-    localStorage.removeItem('ecotoon-progress-v3');
+    localStorage.removeItem('ecotoon-classroom-v1');localStorage.removeItem('ecotoon-progress-v3');
     localStorage.setItem('ecotoon-progress', JSON.stringify({0:{read:true,quiz:true,note:'이전 활동 기록'}}));
   });
   await page.goto(origin + '/#/g1-01/activity');

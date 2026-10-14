@@ -25,3 +25,7 @@
 /assets/fonts/*
 !/assets/fonts/*.woff2
 !/assets/fonts/OFL.txt
+
+!/classroom-store.js
+!/classroom.js
+!/classroom.css
