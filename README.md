@@ -171,3 +171,11 @@ npx --yes --package @playwright/cli playwright-cli -s=ecotoon-wp5 run-code --fil
 `node scripts/verify-games.cjs`는 90편의 풀이 가능성과 모델의 모든 매개변수 조합을 검사합니다. 격리된 localhost Playwright CLI에서 `run-code --filename scripts/smoke-games.cjs`를 실행하면 360·390·768·1280px의 모든 엔진, 9개 모델, 거스름돈, 키보드와 44px 조작을 검사합니다. 결과 캡처는 `output/playwright/wp6/`에 둡니다.
 
 계획의 기록 호환 규칙을 재확인하여 이전 localStorage 키는 자동 이전 후에도 보존하도록 바로잡았습니다. 사용자가 기존 기록 프로필을 명시적으로 삭제하거나 비울 때에만 이전 복사본도 지웁니다.
+
+## WP7 편별 게임 적용
+
+계획표의 29편을 장보기·시뮬레이션·기입장·상황 선택·분산 실험으로 연결했습니다. 나머지 예산 게임도 장보기로 전환해 정답 목록 노출을 없앴습니다. 장보기는 목적과 물건의 쓰임만 제시하며 예산 변경 이벤트 뒤 다시 계획하고 포기한 대안을 돌아봅니다. 저축 이동은 소비와 구분하고, 대출·금리·물가·환율·교환은 명시된 가상 조건으로 계산합니다.
+
+기존 순서/짝/분류는 6~8개 항목, 카드별 오답 이유, 5~6학년 분류 3개 이상을 갖춥니다. 단위는 데이터로 지정하고 결과 문장은 실제 수행과 연결합니다. `production/game-review.md`는 90편 교사 검수 대기표입니다. 자동 풀이 검증과 교육적 난도 검수는 별개입니다.
+
+`node scripts/build-game-curriculum.cjs`는 보존한 게임 원본과 편집 규칙으로 재생성하며 여러 번 실행해도 중복 항목이 생기지 않습니다. 이야기·삽화·퀴즈에는 손대지 않습니다. `node scripts/verify-games.cjs`는 29편 연결, 항목 수·why·단위와 모든 게임의 풀이 가능성을 확인합니다. `scripts/smoke-games.cjs`는 이제 90편 전체와 9개 모델·거스름돈 예시를 네 화면 폭에서 끝까지 풀고 캡처합니다.
