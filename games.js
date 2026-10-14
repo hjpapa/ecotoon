@@ -8,7 +8,7 @@
   root.innerHTML='<div class="game-heading"><span>PLAY · 배움을 써 보는 시간</span><h3>'+esc(game.title)+'</h3></div><p id="game-rule"></p><div id="game-board"></div><p id="game-feedback" role="status" aria-live="polite"></p><div id="game-reward"></div>';
   const q=s=>root.querySelector(s),board=q('#game-board');
   root.onclick=event=>{const b=event.target.closest('button');if(!b)return;const attrs=[...b.attributes].filter(a=>a.name==='id'||a.name.startsWith('data-'));queueMicrotask(()=>{if(b.isConnected||!attrs.length)return;const selector='button'+attrs.map(a=>'['+a.name+'="'+CSS.escape(a.value)+'"]').join('');q(selector)?.focus({preventScroll:true});});};
-  const tell=(message,bad=false)=>{q('#game-feedback').textContent=message;q('#game-feedback').className=bad?'incorrect':'';if(bad)errors++;};
+  const tell=(message,bad=false)=>{q('#game-feedback').innerHTML=EcoMedia.mascot()+'<span>모아: '+esc(message)+'</span>'+EcoMedia.reaction(story.grade,bad?'think':'correct');q('#game-feedback').className=bad?'incorrect':'';if(bad)errors++;};
   function finish(result={}){
    if(finished)return;finished=true;
    const stars=result.stars||(errors===0?3:errors<=2?2:1),saved=onComplete(stars);

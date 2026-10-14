@@ -167,16 +167,16 @@ function speech(line,reversed,story){
  const colon=line.indexOf(':');const person=colon>=0?line.slice(0,colon):'이야기',text=colon>=0?line.slice(colon+1).trim():line;
  const kind=person==='지우'?'jiwoo':person==='하린'?'harin':'guest';
  let side=person==='하린'?'right':'left';if(reversed)side=side==='left'?'right':'left';
- return '<div class="integrated-speech '+kind+' speaker-'+side+'"><b>'+(kind==='guest'?'':EcoMedia.avatar(story.grade,kind))+escapeHTML(person)+'</b><p>'+escapeHTML(text)+'</p></div>';
+ return '<div class="integrated-speech '+kind+' speaker-'+side+'"><b>'+(person==='모아'?EcoMedia.mascot():kind==='guest'?'':EcoMedia.avatar(story.grade,kind))+escapeHTML(person)+'</b><p>'+EcoLearning.words(text,story)+'</p></div>';
 }
 function storyScene(story,p,index){
- return '<section class="integrated-panel" id="panel-'+index+'" tabindex="-1" aria-labelledby="panel-title-'+index+'"><div class="comic-stage"><div class="stage-heading"><span>'+String(index+1).padStart(2,'0')+' / 08</span><p id="panel-title-'+index+'">'+escapeHTML(p.caption)+'</p></div><div class="scene-picture" style="aspect-ratio:'+episodeRatio(story)+'">'+episodeArt(story,index,p.caption)+'</div><div class="dialogue-flow">'+p.lines.map(line=>speech(line,p.reverseSpeakers,story)).join('')+'</div></div></section>';
+ return '<section class="integrated-panel" id="panel-'+index+'" tabindex="-1" aria-labelledby="panel-title-'+index+'"><div class="comic-stage"><div class="stage-heading"><span>'+String(index+1).padStart(2,'0')+' / 08</span><p id="panel-title-'+index+'">'+escapeHTML(p.caption)+'</p></div><div class="scene-picture" style="aspect-ratio:'+episodeRatio(story)+'">'+episodeArt(story,index,p.caption)+'</div><div class="dialogue-flow">'+p.lines.map(line=>speech(line,p.reverseSpeakers,story)).join('')+EcoLearning.pause(story,index)+'</div></div></section>';
 }
 function summaryContent(story){
  const labels=['문제 · 어떤 일이 있었나요?','선택 · 어떻게 했나요?','결과 · 무엇이 달라졌나요?'];
  const recap='<ol class="story-recap">'+story.recap.map((panel,i)=>'<li><figure><div class="recap-picture" style="aspect-ratio:'+episodeRatio(story)+'">'+episodeArt(story,panel,'')+'</div><figcaption><strong>'+labels[i]+'</strong><p>'+escapeHTML(story.panels[panel].caption)+'</p><button type="button" data-recap="'+panel+'">'+(panel+1)+'장면 다시 보기</button></figcaption></figure></li>').join('')+'</ol>';
  const terms='<dl class="summary-terms">'+story.terms.map(term=>'<div><dt>'+escapeHTML(term)+'</dt><dd>'+escapeHTML(window.EcoGlossary[story.grade][term])+'</dd></div>').join('')+'</dl>';
- return recap+'<div class="economic-seed"><strong>🌱 오늘의 경제 씨앗</strong><p>'+escapeHTML(story.lesson)+'</p></div><h4 class="terms-heading">핵심 용어</h4>'+terms;
+ return recap+'<div class="pause-compare"><strong>예상과 결말을 비교해요</strong><p id="pauseCompare">'+escapeHTML(story.pause.question)+' 이야기에서는 어떻게 했나요? 내 생각과 비교해 봐요.</p></div><div class="economic-seed"><strong>🌱 오늘의 경제 씨앗</strong><p>'+escapeHTML(story.lesson)+'</p></div><h4 class="terms-heading">핵심 용어</h4>'+terms;
 }
 function revisitScene(panel,returnStep){
  comicReader.showScene(panel);
@@ -224,7 +224,7 @@ function mountReader(id){
  $('#readerSteps').querySelectorAll('[data-stage]').forEach(button=>button.onclick=()=>scrollToStep(button.dataset.stage));
  $('#readerBody').innerHTML=`
   <section id="stage-comic" data-learning-stage="comic" tabindex="-1" aria-label="① 웹툰">
-    <div class="reader-title"><span class="tag ${story.area}">${story.area} 이야기</span><h2>${escapeHTML(story.subtitle)}</h2><p class="reader-topic">학습 주제 · ${escapeHTML(story.title)}</p><p class="story-hook">${escapeHTML(story.hook)}</p><span class="reading-meta">① 웹툰 → ② 정리 → ③ 퀴즈 → ④ 활동 → ⑤ 게임</span></div>
+    <div class="reader-title"><span class="tag ${story.area}">${story.area} 이야기</span><h2>${escapeHTML(story.subtitle)}</h2><p class="reader-topic">학습 주제 · ${escapeHTML(story.title)}</p><p class="story-hook">${escapeHTML(story.hook)}</p><span class="reading-meta">① 웹툰 → ② 정리 → ③ 퀴즈 → ④ 활동 → ⑤ 게임</span><br><button type="button" class="teacher-link" data-teacher>이 이야기 수업 자료</button></div>
     <div class="comic-panels grade-${story.grade}">${story.panels.map((p,i)=>storyScene(story,p,i)).join('')}</div>
     <div id="sceneControls" class="scene-controls"></div>
     <button id="scrollComicDone" class="action step-forward" data-continue="summary">웹툰을 읽었어요 · 개념 정리로 →</button>
@@ -239,7 +239,7 @@ function mountReader(id){
     <p class="feedback" role="status" aria-live="polite"></p><button type="button" id="quizSceneButton" hidden>${story.quiz.hintPanel+1}장면 다시 보기 →</button><button class="action step-forward" data-continue="activity">생활 속 활동으로 →</button>
   </section>
   <section id="stage-activity" class="activity" data-learning-stage="activity" tabindex="-1" aria-label="④ 활동">
-    <h3 class="learning-heading">④ 활동 · 생활로 옮기기</h3><p>${escapeHTML(story.activity)}</p>
+    <button type="button" class="teacher-link" data-teacher>그림 활동지 · 인쇄</button><h3 class="learning-heading">④ 활동 · 생활로 옮기기</h3><p>${escapeHTML(story.activity)}</p>
     <label for="reflection">나의 생각과 실천 기록 <span class="optional-note">(선택)</span></label><textarea maxlength="10000" id="reflection" placeholder="이름·연락처 없이 나의 생각을 적어요. 글 대신 어른과 이야기하거나 그림으로 활동해도 좋아요."></textarea><small>기록은 현재 기기의 이 브라우저에만 저장돼요.</small><br>
     <button class="action" id="saveActivity">활동 마치고 게임 열기 →</button><p id="saveMessage" role="status" aria-live="polite"></p>
   </section>
@@ -273,6 +273,7 @@ function mountReader(id){
  if(next)$('#nextStory').onclick=()=>readStory(next.id);
  else $('#finishGrade').onclick=()=>showGradeEnd(story);
  $('#backToLibrary').onclick=()=>$('#reader').close();
+ EcoLearning.mount($('#reader'),story);
  readerGame(story);
  comicReader=window.ComicReader.mount($('#reader'),story,{onComic:()=>scrollToStep('comic'),onSummary:()=>{sessionSteps.add('comic');scrollToStep('summary');}});
  if(!$('#reader').open)open($('#reader'));
@@ -315,6 +316,13 @@ $('#guideNav').onclick=()=>{
  $('#infoTitle').textContent='선생님 안내';
  $('#infoBody').innerHTML='<h2>함께 자라는 경제 이야기</h2><p>1~6학년 각 15편, 경제·노동·금융 각 5편으로 총 90편입니다. 학년별 성장형 지우·하린과 만화 안의 말풍선으로 8장면을 읽습니다. 장면마다 상황 묘사와 두 친구의 대화를 읽으며 사건·선택·결과를 따라갑니다. 각 이야기의 8장면은 상황·행동·표정에 맞춰 새로 제작한 전용 삽화로 이어집니다.</p><ol><li>경험을 나누고 학년별 이야기를 고릅니다.</li><li>만화의 8장면을 읽고 누가 무엇을 원했는지, 무엇을 골랐고 어떤 결과가 생겼는지 이야기합니다.</li><li>배운 개념을 정리하고 퀴즈와 생활 활동을 합니다. 저학년은 그림이나 구술도 가능합니다.</li><li>활동 마치고 게임 열기를 누르면 주제별 미니게임이 열립니다.</li><li>게임 결과와 생활 활동을 연결해 다시 생각합니다.</li></ol><p>노래 활동은 새로 만든 리듬을 사용합니다. 금융·무역·창업 게임은 놀이 돈과 가상 상황으로만 진행하며 실제 거래나 투자 추천이 아닙니다. 직업·계약 체험은 안전한 모의 활동이며 실제 취업이 아닙니다.</p><p>기록은 기기 내 브라우저에만 저장됩니다. 상단 별명 버튼에서 학생별 프로필을 선택하고 기록을 JSON 파일로 저장·불러올 수 있습니다. 공용 기기에서는 수업 전에 내 별명을 확인하고 수업 후 필요한 기록을 저장한 뒤 지워 주세요. 프로필은 비밀번호가 없는 구분 기능이며 같은 기기 사용자가 모두 열어 볼 수 있습니다. 계정·교사용 수집·자동 동기화는 제공하지 않습니다. 이름과 연락처, 실제 계좌·신용 정보를 입력하지 않도록 안내해 주세요.</p>';
  open($('#info'));
+};
+// Extend the shared guide with direct access to all per-story worksheets.
+const openGeneralGuide=$('#guideNav').onclick;
+$('#guideNav').onclick=()=>{
+ openGeneralGuide();
+ $('#infoBody').insertAdjacentHTML('beforeend','<h3>편별 수업 자료</h3><label for="teacherStory">이야기 선택</label><select id="teacherStory">'+STORIES.map(s=>'<option value="'+s.id+'">'+s.grade+'학년 · '+escapeHTML(s.subtitle)+'</option>').join('')+'</select><button type="button" class="action" id="openTeacherStory">학습 목표·활동지 열기</button>');
+ $('#openTeacherStory').onclick=()=>EcoLearning.teacher(STORIES.find(s=>s.id===$('#teacherStory').value));
 };
 const total=document.querySelector('.intro-strip span:nth-of-type(2) b');if(total)total.textContent=STORIES.length;
 render();

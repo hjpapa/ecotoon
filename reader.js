@@ -42,6 +42,8 @@
           speech.classList.toggle('speech-pending',pending);
           if (pending) speech.setAttribute('aria-hidden','true'); else speech.removeAttribute('aria-hidden');
         });
+        const pause=panel.querySelector('.story-pause');
+        if(pause)pause.hidden=mode==='board'&&(i!==index||revealed<counts[index]);
       });
       q('#sceneMenu').textContent = '장면 '+(index+1)+' / '+panels.length+' ▾';
       q('#sceneProgress').value = index+1;
@@ -65,7 +67,7 @@
         fitBoardImage();
         if (destroyed || mode !== 'board')return;
         const dialogue=panels[index].querySelector('.dialogue-flow');
-        const speech=dialogue.children[revealed-1];
+        const speech=revealed===counts[index]&&panels[index].querySelector('.story-pause')||dialogue.querySelectorAll('.integrated-speech')[revealed-1];
         if (!speech) {dialogue.scrollTop=0;return;}
         const box=dialogue.getBoundingClientRect(),line=speech.getBoundingClientRect();
         if(line.bottom>box.bottom)dialogue.scrollTop+=line.bottom-box.bottom+12;
@@ -133,7 +135,7 @@
     });
     const comics=q('.comic-panels');
     on(comics,'pointerdown',event=>{
-      if (!active || mode !== 'paged' || event.pointerType !== 'touch' || !event.isPrimary) {touch=null;return;}
+      if (!active || mode !== 'paged' || event.pointerType !== 'touch' || !event.isPrimary || event.target.closest('button,input,textarea,a')) {touch=null;return;}
       touch={id:event.pointerId,x:event.clientX,y:event.clientY};
     },{passive:true});
     on(comics,'pointerup',event=>{

@@ -191,3 +191,15 @@ npx --yes --package @playwright/cli playwright-cli -s=ecotoon-wp5 run-code --fil
 `node scripts/verify-media.cjs`는 이미지 개수·크기·목록 용량을, `node scripts/verify-deployment.cjs`는 사용 파일만 배포되는지 확인합니다. `scripts/smoke-media.cjs`는 네 화면 폭의 새 브라우저 컨텍스트에서 압축 없는 로컬 첫 화면 응답 합계 1.5MB, 목록 전체 이미지 합계 3MB, 개별 장면 로딩을 검사합니다. 전송량은 십진 MB 기준이며 응답 본문 바이트(HTTP 헤더 제외)를 사용합니다.
 
 WP8 로컬 실측(2026-10-14): 첫 화면 360/390px 1,269,293B, 768px 1,293,145B, 1280px 1,308,609B. 전체 목록 이미지 2,130,572B. 90편·720장면 × 4개 폭과 1920px 전자칠판 회귀 검사 통과.
+
+## WP9 대사·예상 질문·수업 자료
+
+90편의 4장면 뒤에 정답 없는 예상 질문 두 선택지를 넣었습니다. 선택은 해당 이야기를 열어 둔 동안만 유지되고 정리 화면에서 결말과 비교합니다. 고르지 않아도 계속 읽을 수 있습니다. 전자칠판에서는 그 장면의 대사를 모두 본 뒤 질문이 나타납니다.
+
+대사는 장면당 0~3개이며 12편에 가족·가게 주인·선생님 등 조연을 추가했습니다. 경제 탐험 안내자 **모아**가 마지막 장면에서 개념을 생활에 연결하고 게임 피드백을 안내합니다. 1~2학년은 한 문장·24자 이하(20자 안팎), 3~4학년 30자, 5~6학년 35자를 검사합니다. 대사 속 핵심어는 점선 밑줄 버튼이며 학년별 `glossary.js` 뜻풀이를 키보드와 터치로 열 수 있습니다.
+
+선생님 안내에서 90편 자료를 선택하거나 이야기·활동의 수업 자료 버튼을 누르세요. 편별 학습 목표, 발문 세 개, 30분 수업 예시, 그림·글 기록 칸을 제공합니다. **활동지 인쇄**는 현재 자료만 A4로 출력하고 학생의 저장 메모는 넣지 않습니다.
+
+`node scripts/build-dialogue.cjs`는 보존한 원래 대사와 `production/pause-prompts.txt`로 재생성합니다. `production/dialogue-review.md`는 현재 대사의 교사 검수 대기표입니다. `production/storyboards.json`은 기존 삽화 생성 프롬프트로 보존합니다. `verify-episodes.cjs`는 그림 관련 장면 설명·순서·화자 좌우·원본 체크섬을 계속 확인하고, 바뀐 웹 대사는 `node scripts/verify-dialogue.cjs`로 검사합니다. 퀴즈 근거 표도 현재 대사에 맞춰 갱신했습니다.
+
+검증: `verify-dialogue`, `verify-episodes`, `verify-quizzes`, `verify-games`, `verify-deployment`; 브라우저 `scripts/smoke-learning.cjs`(네 폭의 예상·뜻풀이·초점·인쇄 및 1920px 조연/침묵 장면), `scripts/smoke-reader.cjs`(90편 × 네 폭과 전자칠판). 실제 교사의 난도·발문 검수는 별도로 남겨 두었습니다.
