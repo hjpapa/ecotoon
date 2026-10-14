@@ -124,3 +124,20 @@ npx --yes --package @playwright/cli playwright-cli -s=ecotoon-wp1 run-code --fil
 이번 편집 기준(공백 포함)은 1~2학년 질문 50자·선택지 18자, 3~4학년 65자·28자, 5~6학년 80자·38자 이하입니다. 최장/최단 선택지 길이 비율은 1.6 이하, 정규화한 씨앗-정답의 2글자 묶음 Dice 유사도는 0.65 미만으로 제한합니다. 숫자 검사는 오개념의 타당성·난도·정답의 유일성을 보증하지 않으므로 교사 검수표에 실제 근거 대사도 함께 제공합니다.
 
 브라우저 검사는 격리된 localhost 세션의 테스트 기록을 초기화합니다. 360·390·768·1280px에서 90편의 정리, 정답·오답 피드백, 정확한 힌트 장면과 복귀, 기록 보존, 글자·버튼 경계를 확인합니다. 캡처는 `output/playwright/wp3/`에 저장합니다.
+
+## WP4 디자인과 접근성
+
+`design.css`에 브랜드·경제/노동/금융·지우/하린·정답/오답/잠금/힌트 색 토큰을 모았습니다. 보조 글자는 12px 이상, 본문과 카드 설명은 16px이며 기존 학년별 대사 크기는 유지합니다. 밝은 배경의 보조 글씨를 진하게 하고, 비활성 버튼도 글자를 흐리게 만들지 않습니다. 모바일 카드는 한 열, 학년 선택은 두 줄로 배치합니다. 키보드 포커스 표시와 목록 바로 가기를 제공하고 동작 줄이기 설정을 따릅니다.
+
+각 이야기 카드는 `article` 안의 링크 하나입니다. 링크의 이름은 학년·제목, 설명은 도입 문장·학습 진행 상태입니다. Enter로 열고 닫은 뒤 같은 카드로 초점이 돌아옵니다. Ctrl/Cmd 클릭과 가운데 버튼으로 새 탭을 열 수 있습니다. 영역·읽기·진행 아이콘은 `icons.js`의 로컬 SVG로 표시하며 글자 레이블을 함께 유지합니다.
+
+Google Fonts 외부 요청을 제거하고 Noto Sans KR 400·700 WOFF2를 자체 호스팅합니다(합계 약 503KiB). [공식 원본](https://github.com/google/fonts/tree/main/ofl/notosanskr)의 SIL OFL 1.1 라이선스를 `assets/fonts/OFL.txt`와 글꼴 메타데이터에 보존했고 하단에서 열 수 있습니다. 원본 TTF의 SHA-256은 `194018e6b2b293a7964f037b25c0249ce1418bc9ab3c971060a03aa57861e252`입니다. 서브셋은 사이트 문구, KS X 1001 한글 2,350자, 자모·라틴·문장 부호를 포함합니다. 범위 밖 사용자 입력은 시스템 글꼴로 표시합니다. 새로운 문구를 추가할 때 필요한 글자가 없다면 개발용 FontTools/Brotli를 설치하고 `python scripts/subset-fonts.py <원본.ttf>`로 재생성하세요. 서비스 실행에는 Python이나 패키지 설치가 필요 없습니다.
+
+```sh
+node scripts/verify-design.cjs
+node scripts/verify-deployment.cjs
+npx --yes --package @playwright/cli playwright-cli -s=ecotoon-wp4 run-code --filename scripts/smoke-design.cjs
+npx --yes --package @playwright/cli playwright-cli -s=ecotoon-wp4 run-code --filename scripts/smoke-flow.cjs
+```
+
+디자인 브라우저 검사는 격리된 localhost 기록을 초기화합니다. 360·390·768·1280px의 목록, 리더, 활동·교사 안내, 게임 여섯 유형, 퀴즈 정답·오답에서 글자 크기·계산된 색상 대비(4.5:1)·44px 터치 영역·가로 넘침을 검사합니다. 외부 요청 0건, 로컬 글꼴 두 개 로딩, 링크 구조와 키보드 복귀, 동작 줄이기도 검사합니다. 이미지 속 글자와 운영체제 이모지는 이 대비 계산의 대상이 아니며 스크린리더 실제 낭독은 별도 기기 확인이 필요합니다. 캡처는 `output/playwright/wp4/`에 저장합니다.
