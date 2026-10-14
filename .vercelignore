@@ -38,3 +38,6 @@
 !/games/
 /games/*
 !/games/*.js
+
+!/learning.js
+!/learning.css

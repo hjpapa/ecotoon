@@ -1,0 +1,31 @@
+.term-word{display:inline;padding:0 3px;min-width:44px;min-height:44px;border:0;border-bottom:2px dotted currentColor;background:transparent;color:#174e32;font:inherit;font-weight:700;cursor:pointer;vertical-align:baseline}
+.integrated-speech.guest,.integrated-speech.guest:before{background:#eef0ed}
+#termDefinition{font-size:18px;line-height:1.8;padding:8px 24px 24px}
+.story-pause{border:2px dashed #6b7958;background:#f5f8e9;padding:16px;border-radius:12px;color:#243c32;flex-shrink:0}
+.story-pause h3{font-size:18px;margin:0 0 8px;line-height:1.6}
+.story-pause p{font-size:16px;line-height:1.7;margin:8px 0}
+.pause-options{display:flex;flex-wrap:wrap;gap:8px}
+.pause-options button{min-width:44px;min-height:44px;padding:10px;border:1px solid #607753;border-radius:8px;background:#fffefa;font:inherit;color:#243c32}
+.pause-options button[aria-pressed="true"]{background:#236e4d;color:white}
+.pause-note,.pause-response{color:#42553c}
+.pause-compare{padding:14px;border:1px dashed #607753;background:#fffefa;border-radius:10px;margin:16px 0}
+#reader .teacher-link{min-height:44px;min-width:44px;border:1px solid #8a9c7b;border-radius:7px;background:#fffefa;padding:10px;font-size:14px;color:#243c32;margin-top:10px}
+.teacher-sheet{font-size:16px;line-height:1.8}
+.teacher-sheet h2{margin:0 0 10px}.teacher-sheet h3{font-size:18px;margin:20px 0 6px}.teacher-sheet li{margin:10px 0}
+.worksheet-space{height:180px;border:1px solid #73866b;border-radius:8px}
+.worksheet-lines{height:90px;background:repeating-linear-gradient(transparent 0 29px,#9ca995 29px 30px)}
+#teacherStory{display:block;width:100%;min-height:44px;font-size:16px;margin:12px 0;padding:8px}
+#reader[data-reading-mode="board"] .story-pause{font-size:20px}
+@media print{
+ body.printing-worksheet{overflow:visible!important;background:white;color:black}
+ body.printing-worksheet>*:not(#info){display:none!important}
+ body.printing-worksheet #info{position:static!important;display:block!important;max-height:none!important;height:auto!important;width:100%!important;max-width:none!important;overflow:visible!important;margin:0!important;padding:0!important;box-shadow:none!important;border-radius:0!important;background:white}
+ body.printing-worksheet #info .dialog-top,body.printing-worksheet #printWorksheet{display:none!important}
+ body.printing-worksheet #infoBody{padding:0!important}
+ body.printing-worksheet .teacher-sheet{font-size:12pt;line-height:1.5}
+ body.printing-worksheet .teacher-sheet h2{font-size:18pt}
+ body.printing-worksheet .worksheet-space{height:140px}
+ body.printing-worksheet .worksheet-lines{height:65px}
+ body.printing-worksheet #info::backdrop{display:none}
+ @page{size:A4;margin:14mm}
+}
