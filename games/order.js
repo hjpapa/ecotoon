@@ -9,7 +9,7 @@ MiniGames.register('order',function(ctx){
       meter();
       board.querySelectorAll('[data-step]').forEach(button => button.onclick = () => {
         if (ctx.finished || button.disabled) return;
-        if (+button.dataset.step !== next) { tell('이 단계 앞에 무엇이 필요할까요? 다른 카드를 골라 보세요.', true); return; }
+        if (+button.dataset.step !== next) { tell(game.why?.[+button.dataset.step]||'앞 단계를 먼저 살펴보세요.', true); return; }
         button.disabled = true;
         const step = document.createElement('span'); step.textContent = (next + 1) + '. ' + game.steps[next]; q('.order-path').append(step);
         next++; meter(); tell('좋아요! 다음 단계를 이어 볼까요?');

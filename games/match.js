@@ -17,7 +17,7 @@ MiniGames.register('match',function(ctx){
           matches++; q('.game-meter').textContent = matches + ' / ' + game.pairs.length + ' 쌍'; tell('짝이 연결됐어요!');
           left = right = null; if (matches === game.pairs.length) finish();
         } else {
-          tell('두 카드의 뜻을 다시 비교해 보세요.', true);
+          tell(game.pairs[+left.dataset.pair][2]||'두 카드의 뜻을 다시 비교해 보세요.', true);
           [left, right].forEach(b=>{b.classList.remove('picked');b.setAttribute('aria-pressed','false');}); left=right=null;
         }
       });

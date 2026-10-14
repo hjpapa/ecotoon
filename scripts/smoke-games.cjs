@@ -4,7 +4,7 @@ async page=>{
  const check=(ok,m)=>{if(!ok)throw Error(m)},errors=[],passed=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto(origin);const stories=await page.evaluate(()=>STORIES.map(s=>({id:s.id,game:s.game}))),examples=await (await page.request.get(origin+'/production/game-examples.json')).json();
  const types=[...new Set(stories.map(s=>s.game.type))];
- const fixtures=[...types.map(type=>({label:type,game:stories.find(s=>s.game.type===type).game})),...examples.filter(g=>g.type==='simulate').map(g=>({label:g.model,game:g})),{label:'change',game:{type:'coins',title:'거스름돈',mode:'change',targets:[350],payments:[500],coins:[10,50,100]}}];
+ const fixtures=[...stories.map(s=>({label:s.id,game:s.game})),...examples.filter(g=>g.type==='simulate').map(g=>({label:g.model,game:g})),{label:'change',game:{type:'coins',title:'거스름돈',mode:'change',targets:[350],payments:[500],coins:[10,50,100]}}];
  for(const width of [360,390,768,1280]){
   await page.setViewportSize({width,height:900});await page.goto(origin+'/#/g1-01/game');
   for(const fixture of fixtures){

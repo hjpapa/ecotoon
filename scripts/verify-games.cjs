@@ -28,6 +28,9 @@ function check(g,id){
  else assert.fail('Unknown engine '+g.type);
 }
 stories.forEach(s=>check(s.game,s.id));examples.forEach(g=>check(g,'example '+g.model));
+const planned={shop:['g1-05','g2-05','g2-14','g3-01','g3-03','g4-15'],simulate:['g2-12','g3-12','g3-14','g5-01','g5-03','g5-11','g5-12','g6-01','g6-03'],ledger:['g3-13','g4-11','g4-12','g4-13','g4-14'],scenario:['g4-07','g4-09','g5-08','g5-15','g6-06','g6-11','g6-12','g6-14'],portfolio:['g5-13']};
+for(const [type,ids]of Object.entries(planned))for(const id of ids)assert.equal(stories.find(s=>s.id===id).game.type,type,id);
+for(const s of stories){const g=s.game;assert.ok(g.unit&&g.wrapUp);if(['order','match','sort'].includes(g.type)){const rows=g.steps||g.pairs||g.cards;assert.ok(rows.length>=6&&rows.length<=8,s.id+' 6–8 items');assert.ok(rows.every((r,i)=>g.type==='order'?g.why[i]:r[2]),s.id+' why');}if(g.type==='sort'&&s.grade>=5)assert.ok(g.bins.length>=3,s.id+' three bins');}
 assert.equal(scope.EcoModels.calculate('interest',{principal:10,weeks:4,rate:2}).value,18);
 assert.equal(scope.EcoModels.calculate('savings-goal',{goal:3000,saved:500,weekly:1000}).value,3);
 assert.equal(scope.EcoModels.calculate('loan',{principal:10000,rate:5,years:2}).value,11000);
