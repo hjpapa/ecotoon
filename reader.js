@@ -157,6 +157,7 @@
     if(resize)resize.observe(comics);else on(window,'resize',fitBoardImage);
     paint();
     return {
+      showScene,
       setStage(step) {
         active=step === 'comic';touch=null;
         if (!active && mode === 'board')changeMode(lastMode,false);

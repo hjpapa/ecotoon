@@ -27,6 +27,30 @@ button{min-width:44px;min-height:44px}
 #reader button:disabled{cursor:default;opacity:.5}
 #reader .portfolio-assets>div>div{flex-wrap:wrap}
 #reader .portfolio-assets button{width:44px;height:44px}
+#returnToLearning{margin:6px 12px 10px;padding:8px 14px;border:1px solid #247653;border-radius:8px;background:#e4efdc;color:#174e32;font-weight:700}
+.story-recap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;padding:0;margin:0 0 22px}
+.story-recap li{min-width:0;background:#fffdf8;border:1px solid #becdb2;border-radius:10px;overflow:hidden}
+.story-recap figure{margin:0}
+.recap-picture{position:relative;overflow:hidden}
+.story-recap figcaption{padding:12px;font-size:14px;line-height:1.8;overflow-wrap:anywhere}
+.story-recap figcaption strong{display:block;color:#245c3d}
+.story-recap figcaption p{margin:6px 0}
+#reader [data-recap]{padding:8px;border:1px solid #a5b99b;border-radius:7px;background:#f2f6e9}
+.economic-seed{border-left:4px solid #247653;padding:12px 16px;background:#fffdf8;border-radius:0 8px 8px 0;font-size:16px}
+.economic-seed p{margin:6px 0 0}
+.terms-heading{font-size:16px;margin:20px 0 8px}
+.summary-terms{margin:0;font-size:15px}
+.summary-terms dt{font-weight:700;color:#245c3d}
+.summary-terms dd{margin:4px 0 0;line-height:1.8}
+.quiz-kind{display:inline-block;padding:4px 9px;background:#fffdf8;border-radius:5px;font-size:12px;color:#6a4a1d}
+#reader .quiz-question,#reader .quiz [data-answer],#reader .feedback{font-size:16px;line-height:1.8}
+#reader[data-grade="1"] .quiz-question,#reader[data-grade="2"] .quiz-question,#reader[data-grade="1"] .quiz [data-answer],#reader[data-grade="2"] .quiz [data-answer]{font-size:18px}
+@media(max-width:600px){
+ .story-recap{grid-template-columns:1fr}
+ .story-recap figure{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);align-items:start}
+ .story-recap figcaption{padding:10px;font-size:14px}
+ #reader .learn-box,#reader .quiz{padding:16px 12px}
+}
 #reader :is(.reader-topic,.reading-meta,.game-victory small,.activity small){color:#52614c}
 @media(max-width:1024px){
  #reader{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:100dvh;margin:0;border-radius:0}
