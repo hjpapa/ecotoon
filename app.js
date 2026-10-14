@@ -13,25 +13,18 @@ const profiles = [
   {name:'경제를 보는 눈',description:'사회와 권리를 근거로 토론하는 두 친구'},
   {name:'세상과 연결',description:'세계와 미래를 계획하며 책임을 생각하는 두 친구'}
 ];
-const LEGACY_MAP = [1,9,12,17,21,27,33,36,42,46,54,56,61,69,73,76,83,87,5,7,3,20,21,30,34,36,42,48,54,59,62,66,71,79,83,88];
-let grade=0, category='전체', readerId=null, progress={};
-function storageRead(key) {
-  try { const v=JSON.parse(localStorage.getItem(key)||'null');return v&&typeof v==='object'&&!Array.isArray(v)?v:null; }catch{return null;}
+let grade=0, category='전체', readerId=null;
+const classroomStore=window.classroomStore=ClassroomStorage.create({
+ getItem:key=>localStorage.getItem(key),setItem:(key,value)=>localStorage.setItem(key,value),removeItem:key=>localStorage.removeItem(key)
+},STORIES);
+let progress=classroomStore.current().records;
+function save(){
+ const ok=classroomStore.save(progress);
+ if(window.refreshClassroomStatus)window.refreshClassroomStatus();
+ if(!ok&&$('#reader').open)$('#linkMessage').textContent=classroomStore.issue();
+ return ok;
 }
-function save(){try{localStorage.setItem('ecotoon-progress-v3',JSON.stringify(progress));return true;}catch{return false;}}
-const existing=storageRead('ecotoon-progress-v3');
-if(existing)progress=existing;
-else {
- const legacy=storageRead('ecotoon-progress')||{};
- Object.entries(legacy).forEach(([index,record])=>{
-   const target=STORIES[LEGACY_MAP[+index]-1];
-   if(!target||!record||typeof record!=='object')return;
-   const current=progress[target.id]||{};
-   const notes=[current.note,typeof record.note==='string'?record.note:null].filter(Boolean);
-   progress[target.id]={...current,read:current.read===true||record.read===true,quiz:current.quiz===true||record.quiz===true,note:notes.join('\n\n')};
- });
- if(Object.keys(progress).length)save();
-}
+window.applyClassroomProfile=()=>{progress=classroomStore.current().records;render();};
 function record(id){
  const p=progress[id];return p&&typeof p==='object'?p:{};
 }
@@ -225,7 +218,7 @@ function mountReader(id){
  if(comicReader)comicReader.destroy();comicReader=null;
  sessionSteps=new Set();activeStep='comic';
  const next=Flow.nextStory(STORIES,story,category);
- $('#readerLabel').textContent=story.grade+'학년 · '+story.area+' · 이야기 '+story.number+'/15';
+ $('#readerLabel').textContent=classroomStore.current().name+' · '+story.grade+'학년 · '+story.area+' · 이야기 '+story.number+'/15';
  $('#linkMessage').replaceChildren();
  $('#returnToLearning').hidden=true;
  $('#readerSteps').innerHTML=Flow.steps.map((step,i)=>'<button type="button" data-stage="'+step.key+'" aria-controls="'+step.target+'"><span class="step-mark" aria-hidden="true">'+(i+1)+'</span><span>'+step.label+'</span></button>').join('');
@@ -248,7 +241,7 @@ function mountReader(id){
   </section>
   <section id="stage-activity" class="activity" data-learning-stage="activity" tabindex="-1" aria-label="④ 활동">
     <h3 class="learning-heading">④ 활동 · 생활로 옮기기</h3><p>${escapeHTML(story.activity)}</p>
-    <label for="reflection">나의 생각과 실천 기록 <span class="optional-note">(선택)</span></label><textarea id="reflection" placeholder="이름·연락처 없이 나의 생각을 적어요. 글 대신 어른과 이야기하거나 그림으로 활동해도 좋아요."></textarea><small>기록은 현재 기기의 이 브라우저에만 저장돼요.</small><br>
+    <label for="reflection">나의 생각과 실천 기록 <span class="optional-note">(선택)</span></label><textarea maxlength="10000" id="reflection" placeholder="이름·연락처 없이 나의 생각을 적어요. 글 대신 어른과 이야기하거나 그림으로 활동해도 좋아요."></textarea><small>기록은 현재 기기의 이 브라우저에만 저장돼요.</small><br>
     <button class="action" id="saveActivity">활동 마치고 게임 열기 →</button><p id="saveMessage" role="status" aria-live="polite"></p>
   </section>
   <section class="mini-game-zone" id="miniGameZone" data-learning-stage="game" tabindex="-1" aria-label="⑤ 게임"></section>
@@ -305,7 +298,7 @@ function showGradeEnd(story){
  end.scrollIntoView({behavior:'instant',block:'start'});end.focus({preventScroll:true});
 }
 function activities(){
- $('#infoTitle').textContent='나의 활동';
+ $('#infoTitle').textContent=classroomStore.current().emoji+' '+classroomStore.current().name+'의 활동';
  const done=STORIES.filter(s=>{const p=record(s.id);return p.read||p.quiz||p.note||p.gameDone;});
  $('#infoBody').innerHTML='<h2>배움과 실천이 차곡차곡 🌱</h2><div class="activity-stats"><span>읽기 <b>'+done.filter(s=>record(s.id).read).length+' / 90</b></span><span>미니게임 <b>'+done.filter(s=>record(s.id).gameDone).length+' / 90</b></span></div><p>학년마다 15편씩, 경제·노동·금융 5편씩 만나요.</p><p>기록은 이 브라우저에만 보관됩니다.</p><div id="savedItems"></div>';
  if(!done.length)$('#savedItems').textContent='아직 활동이 없어요. 내 학년 이야기부터 만나 볼까요?';
@@ -321,7 +314,7 @@ function activities(){
 $('#activityNav').onclick=activities;$('#activityButton').onclick=activities;
 $('#guideNav').onclick=()=>{
  $('#infoTitle').textContent='선생님 안내';
- $('#infoBody').innerHTML='<h2>함께 자라는 경제 이야기</h2><p>1~6학년 각 15편, 경제·노동·금융 각 5편으로 총 90편입니다. 학년별 성장형 지우·하린과 만화 안의 말풍선으로 8장면을 읽습니다. 장면마다 상황 묘사와 두 친구의 대화를 읽으며 사건·선택·결과를 따라갑니다. 각 이야기의 8장면은 상황·행동·표정에 맞춰 새로 제작한 전용 삽화로 이어집니다.</p><ol><li>경험을 나누고 학년별 이야기를 고릅니다.</li><li>만화의 8장면을 읽고 누가 무엇을 원했는지, 무엇을 골랐고 어떤 결과가 생겼는지 이야기합니다.</li><li>배운 개념을 정리하고 퀴즈와 생활 활동을 합니다. 저학년은 그림이나 구술도 가능합니다.</li><li>활동 마치고 게임 열기를 누르면 주제별 미니게임이 열립니다.</li><li>게임 결과와 생활 활동을 연결해 다시 생각합니다.</li></ol><p>노래 활동은 새로 만든 리듬을 사용합니다. 금융·무역·창업 게임은 놀이 돈과 가상 상황으로만 진행하며 실제 거래나 투자 추천이 아닙니다. 직업·계약 체험은 안전한 모의 활동이며 실제 취업이 아닙니다.</p><p>기록은 기기 내 브라우저에만 저장됩니다. 계정·교사용 수집·다른 기기 동기화는 제공하지 않습니다. 이름과 연락처, 실제 계좌·신용 정보를 입력하지 않도록 안내해 주세요.</p>';
+ $('#infoBody').innerHTML='<h2>함께 자라는 경제 이야기</h2><p>1~6학년 각 15편, 경제·노동·금융 각 5편으로 총 90편입니다. 학년별 성장형 지우·하린과 만화 안의 말풍선으로 8장면을 읽습니다. 장면마다 상황 묘사와 두 친구의 대화를 읽으며 사건·선택·결과를 따라갑니다. 각 이야기의 8장면은 상황·행동·표정에 맞춰 새로 제작한 전용 삽화로 이어집니다.</p><ol><li>경험을 나누고 학년별 이야기를 고릅니다.</li><li>만화의 8장면을 읽고 누가 무엇을 원했는지, 무엇을 골랐고 어떤 결과가 생겼는지 이야기합니다.</li><li>배운 개념을 정리하고 퀴즈와 생활 활동을 합니다. 저학년은 그림이나 구술도 가능합니다.</li><li>활동 마치고 게임 열기를 누르면 주제별 미니게임이 열립니다.</li><li>게임 결과와 생활 활동을 연결해 다시 생각합니다.</li></ol><p>노래 활동은 새로 만든 리듬을 사용합니다. 금융·무역·창업 게임은 놀이 돈과 가상 상황으로만 진행하며 실제 거래나 투자 추천이 아닙니다. 직업·계약 체험은 안전한 모의 활동이며 실제 취업이 아닙니다.</p><p>기록은 기기 내 브라우저에만 저장됩니다. 상단 별명 버튼에서 학생별 프로필을 선택하고 기록을 JSON 파일로 저장·불러올 수 있습니다. 공용 기기에서는 수업 전에 내 별명을 확인하고 수업 후 필요한 기록을 저장한 뒤 지워 주세요. 프로필은 비밀번호가 없는 구분 기능이며 같은 기기 사용자가 모두 열어 볼 수 있습니다. 계정·교사용 수집·자동 동기화는 제공하지 않습니다. 이름과 연락처, 실제 계좌·신용 정보를 입력하지 않도록 안내해 주세요.</p>';
  open($('#info'));
 };
 const total=document.querySelector('.intro-strip span:nth-of-type(2) b');if(total)total.textContent=STORIES.length;

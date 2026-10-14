@@ -14,7 +14,7 @@ chars |= set(range(0x2000, 0x2070)) | set(range(0x3000, 0x3040))
 for code in range(0xAC00, 0xD7A4):
     if len(chr(code).encode('euc_kr')) == 2:
         chars.add(code)
-for name in ['index.html', 'app.js', 'catalog.js', 'glossary.js', 'games.js', 'flow.js', 'reader.js']:
+for name in ['index.html', 'app.js', 'catalog.js', 'glossary.js', 'games.js', 'flow.js', 'reader.js', 'classroom-store.js', 'classroom.js']:
     chars.update(map(ord, (root / name).read_text(encoding='utf-8')))
 for weight in [400, 700]:
     font = instantiateVariableFont(TTFont(sys.argv[1]), {'wght': weight}, inplace=True)
