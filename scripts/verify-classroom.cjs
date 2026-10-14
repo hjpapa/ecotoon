@@ -12,7 +12,7 @@ let store=api.create(storage,stories);
 assert.equal(JSON.stringify(store.current().records),JSON.stringify(saved));
 store.add('달토끼','🐰');const rabbit=store.current().id;
 assert.equal(Object.keys(store.current().records).length,0);
-assert.equal(storage.getItem('ecotoon-progress-v3'),null,'Remove old copies only after atomic migration');
+assert.equal(storage.getItem('ecotoon-progress-v3'),JSON.stringify(saved),'Preserve legacy keys on migration');
 assert.equal(store.save({'g1-02':{read:true,note:'토끼 기록'}}),true);
 store.select('original');assert.equal(store.current().records['g1-01'].gameStars,3);
 store.select(rabbit);const file=store.export();

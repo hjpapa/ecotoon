@@ -1,0 +1,432 @@
+[
+  {
+    "type": "simulate",
+    "model": "interest",
+    "title": "사탕 저금통 실험",
+    "mission": "처음 사탕 10개에 매주 붙는 사탕을 관찰해요.",
+    "params": [
+      {
+        "key": "weeks",
+        "label": "맡긴 기간",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "unit": "주"
+      },
+      {
+        "key": "rate",
+        "label": "매주 붙는 사탕",
+        "min": 0,
+        "max": 2,
+        "step": 1,
+        "unit": "개"
+      }
+    ],
+    "fixed": {
+      "principal": 10
+    },
+    "predict": {
+      "question": "같은 약속으로 더 오래 맡기면?",
+      "options": [
+        "늘어날 것 같아요",
+        "줄어들 것 같아요",
+        "같을 것 같아요"
+      ]
+    },
+    "goal": {
+      "text": "매주 붙는 양이 같아도 기간에 따라 합계가 달라져요."
+    },
+    "wrapUp": "매주 붙는 양이 같아도 기간에 따라 합계가 달라져요."
+  },
+  {
+    "type": "simulate",
+    "model": "savings-goal",
+    "title": "앨범까지 몇 주?",
+    "mission": "목표 3000놀이 원까지 모을 기간을 알아봐요.",
+    "params": [
+      {
+        "key": "weekly",
+        "label": "매주 모을 돈",
+        "min": 100,
+        "max": 1000,
+        "step": 100,
+        "unit": "원"
+      }
+    ],
+    "fixed": {
+      "goal": 3000,
+      "saved": 500
+    },
+    "predict": {
+      "question": "매주 모을 돈을 늘리면 필요한 기간은?",
+      "options": [
+        "늘어날 것 같아요",
+        "줄어들 것 같아요",
+        "같을 것 같아요"
+      ]
+    },
+    "goal": {
+      "text": "무리 없는 저축액을 정하고 목표까지의 기간을 살펴봐요."
+    },
+    "wrapUp": "무리 없는 저축액을 정하고 목표까지의 기간을 살펴봐요."
+  },
+  {
+    "type": "simulate",
+    "model": "loan",
+    "title": "빌린 돈의 약속",
+    "mission": "빌린 놀이 돈에 단리 이자가 붙는 가정이에요.",
+    "params": [
+      {
+        "key": "rate",
+        "label": "연 이자율",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "unit": "%"
+      },
+      {
+        "key": "years",
+        "label": "빌린 기간",
+        "min": 1,
+        "max": 3,
+        "step": 1,
+        "unit": "년"
+      }
+    ],
+    "fixed": {
+      "principal": 10000
+    },
+    "predict": {
+      "question": "같은 기간에 금리가 오르면 갚을 돈은?",
+      "options": [
+        "늘어날 것 같아요",
+        "줄어들 것 같아요",
+        "같을 것 같아요"
+      ]
+    },
+    "goal": {
+      "text": "빌린 돈은 원금에 이자를 더해 갚는 약속임을 확인했어요."
+    },
+    "wrapUp": "빌린 돈은 원금에 이자를 더해 갚는 약속임을 확인했어요."
+  },
+  {
+    "type": "simulate",
+    "model": "price-demand",
+    "title": "가격과 손님 실험",
+    "mission": "한 가격에 손님 수가 정해지는 가상 상점이에요.",
+    "params": [
+      {
+        "key": "price",
+        "label": "물건 가격",
+        "min": 100,
+        "max": 1000,
+        "step": 100,
+        "unit": "원"
+      }
+    ],
+    "fixed": {
+      "demand": 20,
+      "sensitivity": 50
+    },
+    "predict": {
+      "question": "가격을 올리면 판매액도 계속 늘까요?",
+      "options": [
+        "늘어날 것 같아요",
+        "줄어들 것 같아요",
+        "같을 것 같아요"
+      ]
+    },
+    "goal": {
+      "text": "손님 수와 가격을 함께 살폈어요. 판매액과 이익은 달라요."
+    },
+    "wrapUp": "손님 수와 가격을 함께 살폈어요. 판매액과 이익은 달라요."
+  },
+  {
+    "type": "simulate",
+    "model": "competition",
+    "title": "가게 수와 선택",
+    "mission": "경쟁 가게 수에 따라 가격이 달라지는 단순 모형이에요.",
+    "params": [
+      {
+        "key": "shops",
+        "label": "경쟁 가게",
+        "min": 0,
+        "max": 4,
+        "step": 1,
+        "unit": "개"
+      }
+    ],
+    "fixed": {
+      "base": 1000,
+      "cost": 500,
+      "discount": 100
+    },
+    "predict": {
+      "question": "경쟁 가게가 늘 때 이 모형의 가격은?",
+      "options": [
+        "늘어날 것 같아요",
+        "줄어들 것 같아요",
+        "같을 것 같아요"
+      ]
+    },
+    "goal": {
+      "text": "경쟁과 소비자의 선택을 연결했어요. 실제 가격에는 여러 원인이 있어요."
+    },
+    "wrapUp": "경쟁과 소비자의 선택을 연결했어요. 실제 가격에는 여러 원인이 있어요."
+  },
+  {
+    "type": "simulate",
+    "model": "rate",
+    "title": "금리와 두 가족",
+    "mission": "저축 10000원, 대출 20000원인 두 가상 가족을 비교해요.",
+    "params": [
+      {
+        "key": "rate",
+        "label": "연 이자율",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "unit": "%"
+      }
+    ],
+    "fixed": {
+      "savings": 10000,
+      "loan": 20000
+    },
+    "predict": {
+      "question": "같은 금리가 오르면 대출 가족의 이자는?",
+      "options": [
+        "늘어날 것 같아요",
+        "줄어들 것 같아요",
+        "같을 것 같아요"
+      ]
+    },
+    "goal": {
+      "text": "저축 이자는 받는 돈, 대출 이자는 내는 돈이에요."
+    },
+    "wrapUp": "저축 이자는 받는 돈, 대출 이자는 내는 돈이에요."
+  },
+  {
+    "type": "simulate",
+    "model": "inflation",
+    "title": "같은 돈의 장바구니",
+    "mission": "예산 10000원으로 같은 물건을 몇 개 살 수 있을까요?",
+    "params": [
+      {
+        "key": "inflation",
+        "label": "가격 상승률",
+        "min": 0,
+        "max": 50,
+        "step": 10,
+        "unit": "%"
+      }
+    ],
+    "fixed": {
+      "budget": 10000,
+      "price": 1000
+    },
+    "predict": {
+      "question": "물건값이 오르면 살 수 있는 수는?",
+      "options": [
+        "늘어날 것 같아요",
+        "줄어들 것 같아요",
+        "같을 것 같아요"
+      ]
+    },
+    "goal": {
+      "text": "같은 돈이라도 가격이 오르면 살 수 있는 양이 줄어들 수 있어요."
+    },
+    "wrapUp": "같은 돈이라도 가격이 오르면 살 수 있는 양이 줄어들 수 있어요."
+  },
+  {
+    "type": "simulate",
+    "model": "exchange",
+    "title": "환율과 놀이 달러",
+    "mission": "10놀이 달러 물건의 원화 가격을 바꿔 봐요.",
+    "params": [
+      {
+        "key": "exchange",
+        "label": "1달러당 원화",
+        "min": 800,
+        "max": 1600,
+        "step": 100,
+        "unit": "원"
+      }
+    ],
+    "fixed": {
+      "dollars": 10
+    },
+    "predict": {
+      "question": "1달러당 원화가 오르면 물건의 원화 가격은?",
+      "options": [
+        "늘어날 것 같아요",
+        "줄어들 것 같아요",
+        "같을 것 같아요"
+      ]
+    },
+    "goal": {
+      "text": "달러 가격이 같아도 원화로 환산한 가격이 달라져요."
+    },
+    "wrapUp": "달러 가격이 같아도 원화로 환산한 가격이 달라져요."
+  },
+  {
+    "type": "simulate",
+    "model": "trade",
+    "title": "두 마을 교환 실험",
+    "mission": "사과만 가진 A와 배만 가진 B가 교환해요.",
+    "params": [
+      {
+        "key": "exchange",
+        "label": "A가 내는 사과",
+        "min": 0,
+        "max": 8,
+        "step": 1,
+        "unit": "개"
+      }
+    ],
+    "fixed": {
+      "apples": 12,
+      "pears": 12,
+      "ratio": 1
+    },
+    "predict": {
+      "question": "교환을 시작하면 과일 꾸러미를 만들 수 있을까요?",
+      "options": [
+        "늘어날 것 같아요",
+        "줄어들 것 같아요",
+        "같을 것 같아요"
+      ]
+    },
+    "goal": {
+      "text": "교환 전후 각 마을의 소비 가능성을 비교했어요. 생산량이 저절로 늘어난 것은 아니에요."
+    },
+    "wrapUp": "교환 전후 각 마을의 소비 가능성을 비교했어요. 생산량이 저절로 늘어난 것은 아니에요."
+  },
+  {
+    "type": "shop",
+    "title": "놀이 장바구니",
+    "mission": "우유 한 가지와 과일 한 가지로 간식을 준비해요.",
+    "unit": "놀이 원",
+    "budget": 1000,
+    "requirements": [
+      "milk",
+      "fruit"
+    ],
+    "items": [
+      {
+        "name": "작은 우유",
+        "price": 400,
+        "tag": "milk",
+        "icon": "🥛",
+        "description": "한 사람이 마실 양"
+      },
+      {
+        "name": "큰 우유",
+        "price": 700,
+        "tag": "milk",
+        "icon": "🥛",
+        "description": "두 사람이 마실 양"
+      },
+      {
+        "name": "사과",
+        "price": 300,
+        "tag": "fruit",
+        "icon": "🍎",
+        "description": "과일 한 개"
+      },
+      {
+        "name": "배",
+        "price": 400,
+        "tag": "fruit",
+        "icon": "🍐",
+        "description": "과일 한 개"
+      },
+      {
+        "name": "스티커",
+        "price": 200,
+        "tag": "extra",
+        "icon": "⭐",
+        "description": "공책 꾸미기"
+      },
+      {
+        "name": "장난감",
+        "price": 800,
+        "tag": "extra",
+        "icon": "🧸",
+        "description": "놀이 시간에 사용"
+      }
+    ],
+    "events": [],
+    "wrapUp": "필요한 쓰임을 먼저 채우고 남는 돈을 확인했어요."
+  },
+  {
+    "type": "ledger",
+    "title": "통장 잔액 찾기",
+    "mission": "들어오고 나간 돈을 보고 각 줄의 잔액을 채워요.",
+    "start": 3000,
+    "rows": [
+      {
+        "memo": "월요일 용돈",
+        "in": 2000,
+        "out": 0
+      },
+      {
+        "memo": "화요일 공책",
+        "in": 0,
+        "out": 1200
+      },
+      {
+        "memo": "수요일 저축",
+        "in": 0,
+        "out": 0,
+        "save": 1000
+      }
+    ],
+    "wrapUp": "기록 덕분에 소비한 돈과 옮긴 돈을 구별했어요."
+  },
+  {
+    "type": "scenario",
+    "title": "정직한 가게의 선택",
+    "mission": "가상 사과 가게에서 손님에게 정보를 알려 주세요.",
+    "start": "start",
+    "nodes": {
+      "start": {
+        "text": "사과 몇 개가 상했어요. 손님은 아직 모르고 있어요.",
+        "choices": [
+          {
+            "label": "상한 사과를 아래 숨긴다",
+            "next": "start",
+            "retry": true,
+            "feedback": "숨기면 손님이 상태를 알고 고를 기회를 잃어요."
+          },
+          {
+            "label": "판매를 멈추고 상태를 확인한다",
+            "next": "explain",
+            "feedback": "상태를 확인하면 안전하게 다음 행동을 고를 수 있어요."
+          }
+        ]
+      },
+      "explain": {
+        "text": "손님이 왜 판매를 멈췄는지 물었어요.",
+        "choices": [
+          {
+            "label": "문제와 새 준비 시간을 알린다",
+            "next": "end",
+            "feedback": "정확한 정보는 손님이 판단하는 데 도움이 돼요."
+          },
+          {
+            "label": "괜찮다고만 말한다",
+            "next": "explain",
+            "retry": true,
+            "feedback": "구체적인 상태를 숨기면 신뢰를 잃을 수 있어요."
+          }
+        ]
+      },
+      "end": {
+        "text": "상한 것은 팔지 않고 손님에게 상황을 알렸어요.",
+        "end": true
+      }
+    },
+    "wrapUp": "당장의 판매보다 안전과 정확한 정보를 먼저 지켰어요."
+  }
+]
