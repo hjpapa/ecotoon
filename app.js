@@ -125,6 +125,7 @@ function updateSteps(){
 }
 function setActiveStep(step){
  activeStep=step;if(comicReader)comicReader.setStage(step);updateSteps();
+ if(step!=='comic')$('#returnToLearning').hidden=true;
  $('#reader').style.setProperty('--reader-offset',($('.reader-toolbar').offsetHeight+18)+'px');
  const hash=Flow.storyHash(readerId,step);
  if(location.hash!==hash)history.replaceState({ecotoonReader:true},'',hash);
@@ -175,6 +176,20 @@ function speech(line,reversed){
 function storyScene(story,p,index){
  return '<section class="integrated-panel" id="panel-'+index+'" tabindex="-1" aria-labelledby="panel-title-'+index+'"><div class="comic-stage"><div class="stage-heading"><span>'+String(index+1).padStart(2,'0')+' / 08</span><p id="panel-title-'+index+'">'+escapeHTML(p.caption)+'</p></div><div class="scene-picture" style="aspect-ratio:'+episodeRatio(story)+'">'+episodeArt(story,index,p.caption)+'</div><div class="dialogue-flow">'+p.lines.map(line=>speech(line,p.reverseSpeakers)).join('')+'</div></div></section>';
 }
+function summaryContent(story){
+ const labels=['문제 · 어떤 일이 있었나요?','선택 · 어떻게 했나요?','결과 · 무엇이 달라졌나요?'];
+ const recap='<ol class="story-recap">'+story.recap.map((panel,i)=>'<li><figure><div class="recap-picture" style="aspect-ratio:'+episodeRatio(story)+'">'+episodeArt(story,panel,'')+'</div><figcaption><strong>'+labels[i]+'</strong><p>'+escapeHTML(story.panels[panel].caption)+'</p><button type="button" data-recap="'+panel+'">'+(panel+1)+'장면 다시 보기</button></figcaption></figure></li>').join('')+'</ol>';
+ const terms='<dl class="summary-terms">'+story.terms.map(term=>'<div><dt>'+escapeHTML(term)+'</dt><dd>'+escapeHTML(window.EcoGlossary[story.grade][term])+'</dd></div>').join('')+'</dl>';
+ return recap+'<div class="economic-seed"><strong>🌱 오늘의 경제 씨앗</strong><p>'+escapeHTML(story.lesson)+'</p></div><h4 class="terms-heading">핵심 용어</h4>'+terms;
+}
+function revisitScene(panel,returnStep){
+ comicReader.showScene(panel);
+ const button=$('#returnToLearning');
+ button.hidden=false;button.textContent=returnStep==='quiz'?'퀴즈로 돌아가기 →':'개념 정리로 돌아가기 →';
+ button.onclick=()=>scrollToStep(returnStep);
+ $('#reader').style.setProperty('--reader-offset',($('.reader-toolbar').offsetHeight+18)+'px');
+ const target=$('#panel-'+panel);target.scrollIntoView({block:'start',behavior:'instant'});target.focus({preventScroll:true});
+}
 function readerGame(story){
  const zone=$('#miniGameZone');
  zone.innerHTML='<h3 class="learning-heading">⑤ 게임 · 다른 상황에 써 보기</h3><div class="unlock-heading"><span id="gameLockIcon" aria-hidden="true"></span><div><h4>'+escapeHTML(story.game.title)+'</h4><p id="gameLockMessage"></p></div></div><button class="action" id="goToActivity">④ 활동으로 이동 →</button><button class="action" id="startGame"></button><p class="game-record" id="gameRecord"></p><div id="miniGamePlay" hidden></div>';
@@ -208,6 +223,7 @@ function mountReader(id){
  const next=Flow.nextStory(STORIES,story,category);
  $('#readerLabel').textContent=story.grade+'학년 · '+story.area+' · 이야기 '+story.number+'/15';
  $('#linkMessage').replaceChildren();
+ $('#returnToLearning').hidden=true;
  $('#readerSteps').innerHTML=Flow.steps.map((step,i)=>'<button type="button" data-stage="'+step.key+'" aria-controls="'+step.target+'"><span class="step-mark" aria-hidden="true">'+(i+1)+'</span><span>'+step.label+'</span></button>').join('');
  $('#readerSteps').querySelectorAll('[data-stage]').forEach(button=>button.onclick=()=>scrollToStep(button.dataset.stage));
  $('#readerBody').innerHTML=`
@@ -218,13 +234,13 @@ function mountReader(id){
     <button id="scrollComicDone" class="action step-forward" data-continue="summary">웹툰을 읽었어요 · 개념 정리로 →</button>
   </section>
   <section id="stage-summary" class="learn-box" data-learning-stage="summary" tabindex="-1" aria-label="② 개념 정리">
-    <h3 class="learning-heading">② 개념 정리 · 배움에 이름 붙이기</h3><strong>🌱 오늘의 경제 씨앗</strong><p>${escapeHTML(story.lesson)}</p>
+    <h3 class="learning-heading">② 개념 정리 · 배움에 이름 붙이기</h3>${summaryContent(story)}
     <button class="action step-forward" data-continue="quiz">개념을 살펴봤어요 · 퀴즈로 →</button>
   </section>
   <section id="stage-quiz" class="quiz" data-learning-stage="quiz" tabindex="-1" aria-label="③ 퀴즈">
-    <h3 class="learning-heading">③ 퀴즈 · 이해했는지 확인하기</h3><p>${escapeHTML(story.quiz.question)}</p>
+    <h3 class="learning-heading">③ 퀴즈 · 이해했는지 확인하기</h3><span class="quiz-kind">${story.quiz.kind==='story'?'이야기 속 선택 살펴보기':'새로운 상황에 적용하기'}</span><p class="quiz-question">${escapeHTML(story.quiz.question)}</p>
     ${story.quiz.options.map((option,i)=>'<button data-answer="'+i+'">'+(i+1)+'. '+escapeHTML(option)+'</button>').join('')}
-    <p class="feedback" aria-live="polite"></p><button class="action step-forward" data-continue="activity">생활 속 활동으로 →</button>
+    <p class="feedback" role="status" aria-live="polite"></p><button type="button" id="quizSceneButton" hidden>${story.quiz.hintPanel+1}장면 다시 보기 →</button><button class="action step-forward" data-continue="activity">생활 속 활동으로 →</button>
   </section>
   <section id="stage-activity" class="activity" data-learning-stage="activity" tabindex="-1" aria-label="④ 활동">
     <h3 class="learning-heading">④ 활동 · 생활로 옮기기</h3><p>${escapeHTML(story.activity)}</p>
@@ -237,6 +253,8 @@ function mountReader(id){
     <button class="back-to-library" id="backToLibrary">목록으로 돌아가기</button>
   </div><section id="gradeEnd" class="grade-completion" hidden tabindex="-1" aria-label="학년 학습 돌아보기"></section>`;
  $('#reflection').value=typeof record(id).note==='string'?record(id).note:'';
+ document.querySelectorAll('[data-recap]').forEach(button=>button.onclick=()=>revisitScene(+button.dataset.recap,'summary'));
+ $('#quizSceneButton').onclick=()=>revisitScene(story.quiz.hintPanel,'quiz');
  document.querySelectorAll('[data-continue]').forEach(button=>button.onclick=()=>{
    if(button.dataset.continue==='summary')sessionSteps.add('comic');
    if(button.dataset.continue==='quiz')sessionSteps.add('summary');
@@ -245,7 +263,8 @@ function mountReader(id){
  document.querySelectorAll('[data-answer]').forEach(button=>button.onclick=()=>{
    const correct=+button.dataset.answer===story.quiz.answer;
    document.querySelectorAll('[data-answer]').forEach(b=>b.classList.remove('correct','wrong'));
-   button.classList.add(correct?'correct':'wrong');$('.feedback').textContent=correct?'맞아요! '+story.lesson:'다시 생각해 볼까요? 오늘의 경제 씨앗을 살펴보세요.';
+   button.classList.add(correct?'correct':'wrong');$('.feedback').textContent=correct?'맞아요! '+story.quiz.explain:'다시 살펴볼까요? '+story.quiz.hint;
+   $('#quizSceneButton').hidden=correct;
    if(correct){progress[id]={...record(id),quiz:true};save();render();updateSteps();}
  });
  if(record(id).quiz===true)$('.feedback').textContent='이 퀴즈를 이미 맞혔어요. 다시 풀어 볼 수 있어요.';
