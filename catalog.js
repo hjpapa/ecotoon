@@ -565,31 +565,61 @@ const STORIES = [
       }
     ],
     "game": {
-      "type": "budget",
+      "type": "shop",
       "title": "놀이 장바구니",
+      "mission": "우유 한 가지와 과일 한 가지로 간식을 준비해요.",
+      "unit": "놀이 원",
       "budget": 1000,
-      "items": [
-        [
-          "우유",
-          500
-        ],
-        [
-          "사과",
-          300
-        ],
-        [
-          "장난감",
-          700
-        ],
-        [
-          "스티커",
-          200
-        ]
+      "requirements": [
+        "milk",
+        "fruit"
       ],
-      "need": [
-        "우유",
-        "사과"
-      ]
+      "items": [
+        {
+          "name": "작은 우유",
+          "price": 400,
+          "tag": "milk",
+          "icon": "🥛",
+          "description": "한 사람이 마실 양"
+        },
+        {
+          "name": "큰 우유",
+          "price": 700,
+          "tag": "milk",
+          "icon": "🥛",
+          "description": "두 사람이 마실 양"
+        },
+        {
+          "name": "사과",
+          "price": 300,
+          "tag": "fruit",
+          "icon": "🍎",
+          "description": "과일 한 개"
+        },
+        {
+          "name": "배",
+          "price": 400,
+          "tag": "fruit",
+          "icon": "🍐",
+          "description": "과일 한 개"
+        },
+        {
+          "name": "스티커",
+          "price": 200,
+          "tag": "extra",
+          "icon": "⭐",
+          "description": "공책 꾸미기"
+        },
+        {
+          "name": "장난감",
+          "price": 800,
+          "tag": "extra",
+          "icon": "🧸",
+          "description": "놀이 시간에 사용"
+        }
+      ],
+      "events": [],
+      "wrapUp": "필요한 쓰임을 먼저 채우고 남는 돈을 확인했어요."
     },
     "grade": 1,
     "number": 5,
@@ -5450,18 +5480,29 @@ const STORIES = [
       }
     ],
     "game": {
-      "type": "coins",
-      "title": "통장 잔액 만들기",
-      "targets": [
-        3000,
-        1500,
-        2500
+      "type": "ledger",
+      "title": "통장 잔액 찾기",
+      "mission": "들어오고 나간 돈을 보고 각 줄의 잔액을 채워요.",
+      "start": 3000,
+      "rows": [
+        {
+          "memo": "월요일 용돈",
+          "in": 2000,
+          "out": 0
+        },
+        {
+          "memo": "화요일 공책",
+          "in": 0,
+          "out": 1200
+        },
+        {
+          "memo": "수요일 저축",
+          "in": 0,
+          "out": 0,
+          "save": 1000
+        }
       ],
-      "coins": [
-        100,
-        500,
-        1000
-      ]
+      "wrapUp": "기록 덕분에 소비한 돈과 옮긴 돈을 구별했어요."
     },
     "grade": 3,
     "number": 13,
@@ -5570,26 +5611,43 @@ const STORIES = [
       }
     ],
     "game": {
-      "type": "match",
-      "title": "이자 토큰 연결",
-      "pairs": [
-        [
-          "처음 열 개",
-          "원금"
-        ],
-        [
-          "추가 한 개",
-          "모의 이자"
-        ],
-        [
-          "모두 열한 개",
-          "원금과 이자 합계"
-        ],
-        [
-          "실제 이자",
-          "조건에 따라 계산"
+      "type": "simulate",
+      "model": "interest",
+      "title": "사탕 저금통 실험",
+      "mission": "처음 사탕 10개에 매주 붙는 사탕을 관찰해요.",
+      "params": [
+        {
+          "key": "weeks",
+          "label": "맡긴 기간",
+          "min": 1,
+          "max": 8,
+          "step": 1,
+          "unit": "주"
+        },
+        {
+          "key": "rate",
+          "label": "매주 붙는 사탕",
+          "min": 0,
+          "max": 2,
+          "step": 1,
+          "unit": "개"
+        }
+      ],
+      "fixed": {
+        "principal": 10
+      },
+      "predict": {
+        "question": "같은 약속으로 더 오래 맡기면?",
+        "options": [
+          "늘어날 것 같아요",
+          "줄어들 것 같아요",
+          "같을 것 같아요"
         ]
-      ]
+      },
+      "goal": {
+        "text": "매주 붙는 양이 같아도 기간에 따라 합계가 달라져요."
+      },
+      "wrapUp": "매주 붙는 양이 같아도 기간에 따라 합계가 달라져요."
     },
     "grade": 3,
     "number": 14,
@@ -6571,38 +6629,49 @@ const STORIES = [
       }
     ],
     "game": {
-      "type": "sort",
-      "title": "정직한 가게 점검",
-      "bins": [
-        "정직한 행동",
-        "고쳐야 할 행동"
-      ],
-      "cards": [
-        [
-          "재료 정보 정확히 알림",
-          0
-        ],
-        [
-          "알고도 거짓 광고",
-          1
-        ],
-        [
-          "잔돈 확인",
-          0
-        ],
-        [
-          "허락 없는 그림 사용",
-          1
-        ],
-        [
-          "상품 상태 공개",
-          0
-        ],
-        [
-          "결함 숨기기",
-          1
-        ]
-      ]
+      "type": "scenario",
+      "title": "정직한 가게의 선택",
+      "mission": "가상 사과 가게에서 손님에게 정보를 알려 주세요.",
+      "start": "start",
+      "nodes": {
+        "start": {
+          "text": "사과 몇 개가 상했어요. 손님은 아직 모르고 있어요.",
+          "choices": [
+            {
+              "label": "상한 사과를 아래 숨긴다",
+              "next": "start",
+              "retry": true,
+              "feedback": "숨기면 손님이 상태를 알고 고를 기회를 잃어요."
+            },
+            {
+              "label": "판매를 멈추고 상태를 확인한다",
+              "next": "explain",
+              "feedback": "상태를 확인하면 안전하게 다음 행동을 고를 수 있어요."
+            }
+          ]
+        },
+        "explain": {
+          "text": "손님이 왜 판매를 멈췄는지 물었어요.",
+          "choices": [
+            {
+              "label": "문제와 새 준비 시간을 알린다",
+              "next": "end",
+              "feedback": "정확한 정보는 손님이 판단하는 데 도움이 돼요."
+            },
+            {
+              "label": "괜찮다고만 말한다",
+              "next": "explain",
+              "retry": true,
+              "feedback": "구체적인 상태를 숨기면 신뢰를 잃을 수 있어요."
+            }
+          ]
+        },
+        "end": {
+          "text": "상한 것은 팔지 않고 손님에게 상황을 알렸어요.",
+          "end": true
+        }
+      },
+      "wrapUp": "당장의 판매보다 안전과 정확한 정보를 먼저 지켰어요."
     },
     "grade": 4,
     "number": 7,

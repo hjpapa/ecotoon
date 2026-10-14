@@ -29,3 +29,8 @@
 !/classroom-store.js
 !/classroom.js
 !/classroom.css
+
+!/games.css
+!/games/
+/games/*
+!/games/*.js

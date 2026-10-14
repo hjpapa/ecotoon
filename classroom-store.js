@@ -72,9 +72,7 @@
    const serialized=JSON.stringify(next);
    try{storage.setItem(KEY,serialized);}catch{fail('브라우저 저장 공간이 부족하거나 차단되었어요. 기록 파일로 저장해 주세요.');}
    state=next;raw=serialized;issue='';
-   // Only remove old copies after all their records are durably migrated.
-   try{storage.removeItem('ecotoon-progress-v3');storage.removeItem('ecotoon-progress');}
-   catch{issue='현재 기록은 저장했지만 이전 형식의 복사본을 지우지 못했어요. 공용 기기의 브라우저 저장 권한을 확인해 주세요.';}
+
   }
   function change(fn){const next=copy(state);fn(next);try{commit(next);}catch(e){issue=e.message;throw e;}}
   const uniqueName=nickname=>{if(state.profiles.some(p=>p.name===nickname))fail('이미 있는 별명이에요. 다른 별명을 골라 주세요.');};
@@ -85,6 +83,7 @@
    const id='p-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);
    change(next=>{next.profiles.push({id,name:nickname,emoji,records});next.activeId=id;});
   }
+  function eraseLegacy(){try{storage.removeItem('ecotoon-progress-v3');storage.removeItem('ecotoon-progress');}catch{issue='현재 프로필은 지웠지만 이전 기록 복사본을 지우지 못했어요. 브라우저 저장 권한을 확인해 주세요.';}}
   return {
    current:()=>copy(current()),list:()=>state.profiles.map(({id,name,emoji})=>({id,name,emoji})),issue:()=>issue,
    save(records){
@@ -95,8 +94,8 @@
    add:(nickname,emoji)=>add(nickname,emoji,{}),
    select(id){if(!state.profiles.some(p=>p.id===id))fail('프로필을 찾을 수 없어요.');change(next=>{next.activeId=id;});},
    rename(nickname,emoji){nickname=name(nickname);if(nickname!==current().name)uniqueName(nickname);if(!EMOJIS.includes(emoji))fail('그림을 골라 주세요.');change(next=>Object.assign(next.profiles.find(p=>p.id===next.activeId),{name:nickname,emoji}));},
-   clear(){change(next=>{next.profiles.find(p=>p.id===next.activeId).records={};});},
-   remove(){if(state.profiles.length===1)fail('마지막 프로필은 지울 수 없어요. 내 기록 지우기를 사용해 주세요.');change(next=>{next.profiles=next.profiles.filter(p=>p.id!==next.activeId);next.activeId=next.profiles[0].id;});},
+   clear(){const original=state.activeId==='original';change(next=>{next.profiles.find(p=>p.id===next.activeId).records={};});if(original)eraseLegacy();},
+   remove(){const original=state.activeId==='original';if(state.profiles.length===1)fail('마지막 프로필은 지울 수 없어요. 내 기록 지우기를 사용해 주세요.');change(next=>{next.profiles=next.profiles.filter(p=>p.id!==next.activeId);next.activeId=next.profiles[0].id;});if(original)eraseLegacy();},
    export(){return JSON.stringify({format:FORMAT,version:1,profile:{name:current().name,emoji:current().emoji},records:current().records},null,2);},
    parse(text){
     if(typeof text!=='string'||new TextEncoder().encode(text).length>MAX_FILE)fail('4MB 이하의 기록 파일을 골라 주세요.');

@@ -1,0 +1,14 @@
+#game-board section{margin:18px 0}
+#game-board h4{font-size:18px;margin:12px 0}
+#game-board label{display:block;font-size:16px;margin:12px 0 6px}
+#game-board textarea,#game-board input:not([type=range]),#game-board select{font:inherit;min-height:44px;width:100%;padding:10px;border:1px solid #63775c;border-radius:8px;background:#fffdf8;color:var(--ink)}
+#game-board textarea{min-height:80px}
+#game-board input[type=range]{width:100%;min-height:44px;accent-color:var(--brand)}
+#game-board button[aria-pressed=true]{background:var(--correct-bg);border:2px solid var(--brand)}
+.result-row{padding:12px 0;border-bottom:1px solid #bdcdb3;font-size:16px}
+.result-row p{font-size:14px}
+.result-bar{height:18px;min-width:2px;background:var(--brand);border-radius:3px;margin-top:6px}
+.ledger-rows{display:grid;gap:12px}.ledger-rows fieldset{min-width:0;border:1px solid #afc4a3;border-radius:8px;padding:12px}.ledger-rows legend{font-weight:700;font-size:16px}
+.scenario-story,.scenario-path{font-size:16px;line-height:1.8}.scenario-path{padding-left:24px}
+#game-board .coin-options{flex-wrap:wrap}#game-board .sort-bins{flex-wrap:wrap}#game-board .sort-bins button{min-width:80px}
+#game-board .portfolio-assets{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
