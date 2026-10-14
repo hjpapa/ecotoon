@@ -1,0 +1,69 @@
+/* Shared design tokens. All text pairs target at least 4.5:1. */
+@font-face{font-family:'Noto Sans KR';font-style:normal;font-weight:400;font-display:swap;src:url('assets/fonts/noto-sans-kr-400.woff2') format('woff2')}
+@font-face{font-family:'Noto Sans KR';font-style:normal;font-weight:700;font-display:swap;src:url('assets/fonts/noto-sans-kr-700.woff2') format('woff2')}
+:root{
+ --ink:#243b34;--muted:#52614c;--cream:#fbfaf6;
+ --brand:#247653;--green:var(--brand);--surface:#fffdf8;
+ --economy:#315e35;--economy-bg:#eaf1e2;
+ --labor:#81501f;--labor-bg:#fcf0e5;
+ --finance:#345b89;--finance-bg:#eaf0f8;
+ --jiwoo:#fff3cd;--harin:#e4f0df;
+ --correct:#235b35;--correct-bg:#d9ecd3;
+ --wrong:#863b29;--wrong-bg:#f9ddd5;
+ --locked:#485344;--locked-bg:#e1e5dc;
+ --hint:#654c1c;--hint-bg:#fff0d5;
+ --focus:#184f99;
+}
+body{font-size:16px;line-height:1.7}
+button,input,textarea{font-family:inherit}
+button,a,input,textarea{touch-action:manipulation}
+button{min-width:44px;min-height:44px}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+.skip-link{position:absolute;top:8px;left:8px;z-index:100;padding:10px 16px;background:var(--surface);color:var(--ink);transform:translateY(-200%)}
+.skip-link:focus{transform:none}
+.icon{display:inline-block;width:1.2em;height:1.2em;vertical-align:-.2em;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+header nav a,header nav button{display:inline-flex;align-items:center;justify-content:center;min-height:44px}
+.hero-copy p,.card p,.bottom-banner p,.reader-title .story-hook,.summary-terms,#game-rule,#game-board>p,.game-victory p,.grade-completion p{font-size:16px}
+.card{position:relative;min-width:0}
+.card-link{display:block;height:100%;color:inherit;text-decoration:none}
+.card-link:focus-visible{outline-offset:-4px;border-radius:14px}
+.card:focus-within{box-shadow:0 8px 24px #243b3426}
+.card p{min-height:0;line-height:1.8}
+.tag.경제{color:var(--economy);background:var(--economy-bg)}
+.tag.노동{color:var(--labor);background:var(--labor-bg)}
+.tag.금융{color:var(--finance);background:var(--finance-bg)}
+.grade-label{background:var(--surface);color:var(--ink)}
+.integrated-speech{background:var(--jiwoo)}
+.integrated-speech:before{background:var(--jiwoo)}
+.integrated-speech.harin,.integrated-speech.harin:before{background:var(--harin)}
+.quiz button.correct{color:var(--correct);background:var(--correct-bg)}
+.quiz button.wrong{color:var(--wrong);background:var(--wrong-bg)}
+.feedback{color:var(--correct)}
+.feedback.wrong,#game-feedback.incorrect{color:var(--wrong)}
+.route-notice{color:var(--hint);background:var(--hint-bg)}
+button:disabled,#reader button:disabled{opacity:1;color:var(--locked);background:var(--locked-bg);cursor:not-allowed;border-style:dashed}
+.game-options button:disabled,.match-columns button.matched{color:var(--correct);background:var(--correct-bg)}
+.close{width:44px;height:44px;flex-shrink:0}
+.grades small{color:var(--muted)}
+.grades button.selected small{color:#fff}
+.toolbar{flex-wrap:wrap;gap:10px}
+.categories{flex-wrap:wrap}
+@media(max-width:600px){
+ .cards{grid-template-columns:1fr}
+ .grades{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+ .grades button{padding:10px 4px}
+ .growth-steps{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .growth-steps span{padding:0 4px;overflow-wrap:anywhere}
+ .section-heading h2{line-height:1.5}
+ .hero-copy p br{display:none}
+ .bottom-banner{flex-wrap:wrap;gap:12px}
+ .bottom-banner>div{min-width:0;flex:1}
+ .bottom-banner button{margin-left:0}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+ .card:hover,.growth-steps button:hover{transform:none}
+}
+.font-license{display:inline-flex;align-items:center;min-height:44px;font-size:12px;color:var(--muted)}
+.brand{min-height:44px}

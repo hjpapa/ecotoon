@@ -63,8 +63,8 @@ function render(){
   const p=record(s.id), flags=Flow.progressFlags(p);
   const stages=[['read','읽기'],['quiz','퀴즈'],['activity','활동'],['game','게임']];
   const status=stages.map(([key,label])=>label+' '+(flags[key]?'완료':'미완료')).join(', ');
-  const marks='<span class="card-progress" aria-hidden="true">'+stages.map(([key,label])=>'<span data-complete="'+flags[key]+'"><span>'+(flags[key]?'✓':'○')+'</span> '+label+'</span>').join('')+'</span>';
-  return '<button class="card" data-story="'+s.id+'" aria-label="'+s.grade+'학년 '+escapeHTML(s.title)+' 읽기 · '+status+'"><div class="cover episode-cover" style="--episode-ratio:'+episodeRatio(s)+'">'+episodeArt(s,0,s.subtitle+' · '+s.panels[0].caption)+'<span class="grade-label">'+s.grade+'학년</span>'+(p.read?'<span class="read-label">'+(p.gameDone?'게임 완료 ★':'게임 열림 ✓')+'</span>':'')+'</div><div class="card-body"><div class="tags"><span class="tag '+s.area+'">'+s.area+'</span><span>EP. '+String(s.number).padStart(2,'0')+'</span></div><h3>'+escapeHTML(s.title)+'</h3><span class="story-subtitle">'+escapeHTML(s.subtitle)+'</span><p>'+escapeHTML(s.hook)+'</p>'+marks+'<div class="card-bottom"><span>▤ 8장면 · 활동 후 게임</span><b>읽어 보기 ↗</b></div></div></button>';
+  const marks='<span class="card-progress" aria-hidden="true">'+stages.map(([key,label])=>'<span data-complete="'+flags[key]+'"><span>'+EcoIcons(flags[key]?'check':'circle')+'</span> '+label+'</span>').join('')+'</span>';
+  return '<article class="card"><a class="card-link" data-story="'+s.id+'" href="'+Flow.storyHash(s.id)+'" aria-labelledby="title-'+s.id+'" aria-describedby="hook-'+s.id+' progress-'+s.id+'"><div class="cover episode-cover" style="--episode-ratio:'+episodeRatio(s)+'">'+episodeArt(s,0,s.subtitle+' · '+s.panels[0].caption)+'<span class="grade-label">'+s.grade+'학년</span>'+(p.read?'<span class="read-label">'+(p.gameDone?'게임 완료 ★':'게임 열림 ✓')+'</span>':'')+'</div><div class="card-body"><div class="tags"><span class="tag '+s.area+'">'+s.area+'</span><span>EP. '+String(s.number).padStart(2,'0')+'</span></div><h3 id="title-'+s.id+'">'+s.grade+'학년 · '+escapeHTML(s.title)+'</h3><span class="story-subtitle">'+escapeHTML(s.subtitle)+'</span><p id="hook-'+s.id+'">'+escapeHTML(s.hook)+'</p><span class="sr-only" id="progress-'+s.id+'">'+status+'</span>'+marks+'<div class="card-bottom"><span>'+EcoIcons('book')+' 8장면 · 활동 후 게임</span><b>읽어 보기 '+EcoIcons('arrow')+'</b></div></div></a></article>';
  }).join('');
 }
 function open(dialog){dialog.showModal();document.body.classList.add('modal-open');}
@@ -86,7 +86,11 @@ document.querySelectorAll('dialog').forEach(dialog=>{
  });
  dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();});
 });
-$('#cards').onclick=event=>{const button=event.target.closest('[data-story]');if(button)readStory(button.dataset.story);};
+$('#cards').onclick=event=>{
+ const link=event.target.closest('a[data-story]');
+ if(!link||event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+ event.preventDefault();readStory(link.dataset.story);
+};
 // One reader history entry: stage/episode changes replace it, Back returns to the library.
 function readStory(id,step='comic'){
  const hash=Flow.storyHash(id,step);if(!Flow.parseRoute(hash,STORIES))return;

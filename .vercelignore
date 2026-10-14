@@ -18,3 +18,10 @@
 !/assets/episodes/
 /assets/episodes/*
 !/assets/episodes/*.webp
+
+!/design.css
+!/icons.js
+!/assets/fonts/
+/assets/fonts/*
+!/assets/fonts/*.woff2
+!/assets/fonts/OFL.txt
