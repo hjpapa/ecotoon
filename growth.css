@@ -8,15 +8,21 @@
 .growth-steps button:hover{transform:translateY(-3px)}.growth-steps .art-crop{width:100%;aspect-ratio:1}
 .growth-steps b{display:block;margin:10px 0 4px;font-size:13px}.growth-steps span{display:block;font-size:12px;color:#5c6c58}
 .growth-note{font-size:12px;color:#5a6955;text-align:center;line-height:1.8;margin:14px 0}
-.growth-art{background-repeat:no-repeat;background-size:300% 400%;background-color:#f4eddb}
-.age-1{background-image:url('assets/growth-grade-1.webp')}.age-2{background-image:url('assets/growth-grade-2.webp')}.age-3{background-image:url('assets/growth-grade-3.webp')}.age-4{background-image:url('assets/growth-grade-4.webp')}.age-5{background-image:url('assets/growth-grade-5.webp')}.age-6{background-image:url('assets/growth-grade-6.webp')}
+.growth-art{background-repeat:no-repeat;background-size:cover;background-color:#f4eddb}
+.age-1{background-image:url('assets/ui/growth-1.webp')}.age-2{background-image:url('assets/ui/growth-2.webp')}.age-3{background-image:url('assets/ui/growth-3.webp')}.age-4{background-image:url('assets/ui/growth-4.webp')}.age-5{background-image:url('assets/ui/growth-5.webp')}.age-6{background-image:url('assets/ui/growth-6.webp')}
 .art-0{background-position:0% 0%}
 .art-crop{position:relative;overflow:hidden}
-.art-crop>.growth-art{position:absolute;inset:0;transform:scale(1.12)}
+.art-crop>.growth-art{position:absolute;inset:0;transform:none}
 .cover.episode-cover{height:auto;aspect-ratio:var(--episode-ratio);overflow:hidden}
-.episode-art,.episode-tile{position:absolute;inset:0;overflow:hidden}
-.episode-tile{transform:scale(1.025)}
-.episode-art img{position:absolute;max-width:none;object-fit:fill}
+.episode-art{position:absolute;inset:0;overflow:hidden}
+
+.episode-art img{display:block;width:100%;height:100%;object-fit:cover}
+.speaker-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.integrated-speech b{display:flex;align-items:center;gap:8px}
+.character-reaction{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0}
+.mascot-avatar{vertical-align:middle;border-radius:50%;margin-right:8px}
+.play-money{display:block;width:100px;height:72px;max-width:100%}
+.coin-options button{display:grid;justify-items:center}
 .card p{min-height:58px}.card-bottom{gap:8px;flex-wrap:wrap}.card-bottom>span{font-size:12px}
 .integrated-panel{border:2px solid #36513d;border-radius:12px;overflow:hidden;margin:0 0 27px;box-shadow:3px 4px 0 #dce5d6;scroll-margin-top:140px;background:#fff6e2}
 .comic-stage{position:relative;width:100%;overflow:hidden;background:#fff6e2}

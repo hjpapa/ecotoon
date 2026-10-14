@@ -28,7 +28,8 @@ for (const file of [...required].filter(file => file.endsWith('.css'))) {
   }
 }
 const stories = vm.runInNewContext(read('catalog.js') + ';STORIES');
-for (const story of stories) required.add(story.illustration.src);
+const media = JSON.parse(read('production/media-manifest.json'));
+for (const file of Object.keys(media)) required.add('assets/'+file);
 for (const file of required) {
   assert.ok(fs.existsSync(path.join(root, file)), 'Missing runtime file: ' + file);
   assert.ok(deployed.has(file), 'Runtime file excluded from deployment: ' + file);

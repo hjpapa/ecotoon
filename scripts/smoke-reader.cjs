@@ -4,6 +4,7 @@ async (page) => {
   if(!/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin))throw new Error('Use a local test server');
   const check=(value,message)=>{if(!value)throw new Error(message);};
   const errors=[],results=[];
+  await page.goto('about:blank');
   page.on('pageerror',error=>errors.push(error.message));
   const settle=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
   const scene=()=>page.locator('#sceneProgress').getAttribute('value');
@@ -30,7 +31,7 @@ async (page) => {
     await page.locator('#nextScene').click();await settle();
     check(await stage('summary').getAttribute('aria-current')==='step','Final scene advances to summary');
     check(!(await page.locator('#readerModes').isVisible()),'Comic controls hidden in summary');
-    await stage('comic').click();await page.locator('#readingMode').click();
+    await stage('comic').click();await page.locator('#readingMode').click();await settle();
     check(await page.locator('.integrated-panel:visible').count()===8,'Scroll shows all scenes');
     await page.locator('#panel-3').evaluate(el=>el.scrollIntoView({block:'start',behavior:'instant'}));await settle();
     check(await scene()==='4','Scroll updates scene progress');
@@ -111,3 +112,4 @@ async (page) => {
   check(errors.length===0,errors.join('; '));
   return {passed:results,errors};
 }
+

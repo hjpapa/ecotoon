@@ -28,10 +28,9 @@ window.applyClassroomProfile=()=>{progress=classroomStore.current().records;rend
 function record(id){
  const p=progress[id];return p&&typeof p==='object'?p:{};
 }
-function episodeArt(story,index,description){
- const sheet=story.illustration;
- const col=index%sheet.columns,row=Math.floor(index/sheet.columns);
- return '<div class="episode-art"><div class="episode-tile"><img src="'+escapeHTML(sheet.src)+'" width="'+sheet.width+'" height="'+sheet.height+'" loading="lazy" decoding="async" alt="'+escapeHTML(description)+'" style="width:'+sheet.columns*100+'%;height:'+sheet.rows*100+'%;left:'+(-col*100)+'%;top:'+(-row*100)+'%"></div></div>';
+function episodeArt(story,index,description,cover=false){
+ const path='assets/episodes/'+story.id+'/'+String(index+1).padStart(2,'0');
+ return '<div class="episode-art"><img src="'+(cover?'assets/covers/'+story.id+'.webp':path+'.webp')+'" '+(cover?'':'srcset="'+path+'-small.webp 360w, '+path+'.webp 543w" sizes="(max-width: 520px) calc(100vw - 64px), (max-width: 1024px) 85vw, 740px" ')+'width="'+(cover?480:543)+'" height="'+(cover?320:362)+'" loading="lazy" decoding="async" alt="'+escapeHTML(description)+'"></div>';
 }
 function episodeRatio(story){const s=story.illustration;return s.width*s.rows/(s.height*s.columns);}
 $('#grades').innerHTML='<button data-grade="0" class="selected" aria-pressed="true">전체 학년<small>모든 이야기</small></button>'+profiles.map((p,i)=>'<button data-grade="'+(i+1)+'" aria-pressed="false">'+(i+1)+'학년<small>'+p.name+'</small></button>').join('');
@@ -57,7 +56,7 @@ function render(){
   const stages=[['read','읽기'],['quiz','퀴즈'],['activity','활동'],['game','게임']];
   const status=stages.map(([key,label])=>label+' '+(flags[key]?'완료':'미완료')).join(', ');
   const marks='<span class="card-progress" aria-hidden="true">'+stages.map(([key,label])=>'<span data-complete="'+flags[key]+'"><span>'+EcoIcons(flags[key]?'check':'circle')+'</span> '+label+'</span>').join('')+'</span>';
-  return '<article class="card"><a class="card-link" data-story="'+s.id+'" href="'+Flow.storyHash(s.id)+'" aria-labelledby="title-'+s.id+'" aria-describedby="hook-'+s.id+' progress-'+s.id+'"><div class="cover episode-cover" style="--episode-ratio:'+episodeRatio(s)+'">'+episodeArt(s,0,s.subtitle+' · '+s.panels[0].caption)+'<span class="grade-label">'+s.grade+'학년</span>'+(p.read?'<span class="read-label">'+(p.gameDone?'게임 완료 ★':'게임 열림 ✓')+'</span>':'')+'</div><div class="card-body"><div class="tags"><span class="tag '+s.area+'">'+s.area+'</span><span>EP. '+String(s.number).padStart(2,'0')+'</span></div><h3 id="title-'+s.id+'">'+s.grade+'학년 · '+escapeHTML(s.title)+'</h3><span class="story-subtitle">'+escapeHTML(s.subtitle)+'</span><p id="hook-'+s.id+'">'+escapeHTML(s.hook)+'</p><span class="sr-only" id="progress-'+s.id+'">'+status+'</span>'+marks+'<div class="card-bottom"><span>'+EcoIcons('book')+' 8장면 · 활동 후 게임</span><b>읽어 보기 '+EcoIcons('arrow')+'</b></div></div></a></article>';
+  return '<article class="card"><a class="card-link" data-story="'+s.id+'" href="'+Flow.storyHash(s.id)+'" aria-labelledby="title-'+s.id+'" aria-describedby="hook-'+s.id+' progress-'+s.id+'"><div class="cover episode-cover" style="--episode-ratio:'+episodeRatio(s)+'">'+episodeArt(s,0,s.subtitle+' · '+s.panels[0].caption,true)+'<span class="grade-label">'+s.grade+'학년</span>'+(p.read?'<span class="read-label">'+(p.gameDone?'게임 완료 ★':'게임 열림 ✓')+'</span>':'')+'</div><div class="card-body"><div class="tags"><span class="tag '+s.area+'">'+s.area+'</span><span>EP. '+String(s.number).padStart(2,'0')+'</span></div><h3 id="title-'+s.id+'">'+s.grade+'학년 · '+escapeHTML(s.title)+'</h3><span class="story-subtitle">'+escapeHTML(s.subtitle)+'</span><p id="hook-'+s.id+'">'+escapeHTML(s.hook)+'</p><span class="sr-only" id="progress-'+s.id+'">'+status+'</span>'+marks+'<div class="card-bottom"><span>'+EcoIcons('book')+' 8장면 · 활동 후 게임</span><b>읽어 보기 '+EcoIcons('arrow')+'</b></div></div></a></article>';
  }).join('');
 }
 function open(dialog){dialog.showModal();document.body.classList.add('modal-open');}
@@ -164,14 +163,14 @@ $('#shareStory').onclick=async()=>{
 };
 window.addEventListener('popstate',syncRoute);
 window.addEventListener('hashchange',syncRoute);
-function speech(line,reversed){
+function speech(line,reversed,story){
  const colon=line.indexOf(':');const person=colon>=0?line.slice(0,colon):'이야기',text=colon>=0?line.slice(colon+1).trim():line;
  const kind=person==='지우'?'jiwoo':person==='하린'?'harin':'guest';
  let side=person==='하린'?'right':'left';if(reversed)side=side==='left'?'right':'left';
- return '<div class="integrated-speech '+kind+' speaker-'+side+'"><b>'+escapeHTML(person)+'</b><p>'+escapeHTML(text)+'</p></div>';
+ return '<div class="integrated-speech '+kind+' speaker-'+side+'"><b>'+(kind==='guest'?'':EcoMedia.avatar(story.grade,kind))+escapeHTML(person)+'</b><p>'+escapeHTML(text)+'</p></div>';
 }
 function storyScene(story,p,index){
- return '<section class="integrated-panel" id="panel-'+index+'" tabindex="-1" aria-labelledby="panel-title-'+index+'"><div class="comic-stage"><div class="stage-heading"><span>'+String(index+1).padStart(2,'0')+' / 08</span><p id="panel-title-'+index+'">'+escapeHTML(p.caption)+'</p></div><div class="scene-picture" style="aspect-ratio:'+episodeRatio(story)+'">'+episodeArt(story,index,p.caption)+'</div><div class="dialogue-flow">'+p.lines.map(line=>speech(line,p.reverseSpeakers)).join('')+'</div></div></section>';
+ return '<section class="integrated-panel" id="panel-'+index+'" tabindex="-1" aria-labelledby="panel-title-'+index+'"><div class="comic-stage"><div class="stage-heading"><span>'+String(index+1).padStart(2,'0')+' / 08</span><p id="panel-title-'+index+'">'+escapeHTML(p.caption)+'</p></div><div class="scene-picture" style="aspect-ratio:'+episodeRatio(story)+'">'+episodeArt(story,index,p.caption)+'</div><div class="dialogue-flow">'+p.lines.map(line=>speech(line,p.reverseSpeakers,story)).join('')+'</div></div></section>';
 }
 function summaryContent(story){
  const labels=['문제 · 어떤 일이 있었나요?','선택 · 어떻게 했나요?','결과 · 무엇이 달라졌나요?'];
